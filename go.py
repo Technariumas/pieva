@@ -1,7 +1,7 @@
 #!/usr/bin/python
 from pieva import *
-from screen import Screen
 from palette import ColorPalette
+from screen import Screen
 import numpy as np
 import time
 import fastopc as opc
@@ -28,7 +28,7 @@ class NoiseParams:
         self.amplitude = amplitude
         self.offset = offset
         
-paletteFileCSV="palettes/rainbow"
+paletteFileCSV="/home/mic/pieva/palettes/rainbow"
 
 width = 140
 height = 140
