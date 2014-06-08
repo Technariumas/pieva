@@ -9,17 +9,31 @@ def toRGBBytes(value):
 class Screen():
     leds = opc.FastOPC()
     auxscreens = []
-
+    pixelMap = []
+    
     def __init__(self, auxscreens = []):
         if None != auxscreens:
             for aux in auxscreens:
                 self.auxscreens.append(opc.FastOPC(aux))
-        
-    def getPixelsFor(self, pattern, x, y, bitmap):
-        pixels = []
-        for led in pattern:
+        for section in sections:
+            self.pixelMap += self.createMapFor(section)
+            
+    def createMapFor(self, section):
+        pixmap = []
+        x = section['startX']
+        y = section['startY']
+        for led in section['pattern']:
             x = x + led['xstep']
             y = y + led['ystep']
+            pixmap.append((x, y))
+        section['map'] = pixmap
+        return pixmap
+        
+    def getPixelsFor(self, section, bitmap):
+        pixels = []
+        for i in range(len(section['pattern'])):
+            y = section['map'][i][1]
+            x = section['map'][i][0]
             pixels += toRGBBytes(bitmap[y, x])
         return pixels
 
@@ -28,7 +42,7 @@ class Screen():
         tosend = []
         startTime = time.time()
         for section in sections:
-            tosend += self.getPixelsFor(section['pattern'], section['startX'], section['startY'], bitmap)
+            tosend += self.getPixelsFor(section, bitmap)
         endTime = time.time()
         print("preparation time: ", (endTime - startTime))
         startTime = time.time()
