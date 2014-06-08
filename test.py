@@ -10,9 +10,9 @@ def testPattern(pattern):
     pixels = []
     for i in range(len(pattern)):
         if i == testDotIndex:
-            pixels.append(testDot)
+            pixels += testDot
         else:
-            pixels.append(testBlank)
+            pixels += testBlank
     testDotIndex = testDotIndex + 1
     if(testDotIndex >= len(pattern)):
         testDotIndex = 0
@@ -21,26 +21,27 @@ def testPattern(pattern):
 def blank(pattern):
     pixels = []
     for led in pattern:
-        pixels.append(testBlank)
+        pixels += testBlank
     return pixels
 
 def test(testSectionIdx):
     for t in range(len(sections[testSectionIdx]['pattern'])):
         s = 0
         pixels = []
+        startTime = time.time()
         for section in sections:
             if s == testSectionIdx:
-                pixels.append(testPattern(section['pattern']))
+                pixels += testPattern(section['pattern'])
             else:
-                pixels.append(blank(section['pattern']))
+                pixels += blank(section['pattern'])
             s = s +1
-        startTime = time.time() 
-	leds.putPixels(0, pixels)
-	endTime = time.time()
-	print "pushing pixels in", (endTime - startTime), "s"
+         
+        leds.putPixels(0, pixels)
+        endTime = time.time()
+        print "pushing pixels in", (endTime - startTime), "s"
         if None != screen:
             screen.putPixels(0, pixels)
-        time.sleep(0.01)
+        time.sleep(0.05)
 
 parser = ArgumentParser(description = "Play test sequences")
 parser.add_argument("testSection", type=int, action="store", default=None, nargs="?", help=" - which section to test. All sections will be tested if omitted")
@@ -64,6 +65,9 @@ else:
     currSection = 0
     print "Testing all sections"
 print "Control-C to interrupt"
+
+#~ print testPattern(sections[0]['pattern'])
+
 while True:
     test(currSection)
     if None == cliargs.testSection:
