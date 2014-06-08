@@ -39,11 +39,25 @@ class Screen():
 
 
     def send(self, bitmap):
-        tosend = []
+        tosend = [None] * 3072
         
         startTime = time.time()
+        ledsSent = 0
         for section in sections:
-            tosend += self.getPixelsFor(section, bitmap)
+            for i in range(len(section['pattern'])):
+                y = section['map'][i][1]
+                x = section['map'][i][0]
+                value = int(bitmap[y, x])
+                #toRGBBytes(bitmap[y, x])
+                print ledsSent
+                tosend[ledsSent] =  ((value >> 16) & 0x0000FF)
+                ledsSent += 1
+                tosend[ledsSent] =  ((value >> 8) & 0x0000FF)
+                ledsSent += 1
+                tosend[ledsSent] =  (value & 0x0000FF)
+                ledsSent += 1
+            
+        #tosend += self.getPixelsFor(section, bitmap)
         endTime = time.time()
         print("preparation time: ", (endTime - startTime))
         
