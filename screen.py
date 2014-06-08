@@ -49,7 +49,6 @@ class Screen():
                 x = section['map'][i][0]
                 value = int(bitmap[y, x])
                 #toRGBBytes(bitmap[y, x])
-                print ledsSent
                 tosend[ledsSent] =  ((value >> 16) & 0x0000FF)
                 ledsSent += 1
                 tosend[ledsSent] =  ((value >> 8) & 0x0000FF)
