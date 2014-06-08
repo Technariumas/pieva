@@ -1,39 +1,38 @@
 from argparse import ArgumentParser
 from pieva import *
 import fastopc as opc
-import numpy as np
 import time
 
 leds = opc.FastOPC()
 
 def testPattern(pattern):
     global testDotIndex
-    pixels = np.empty([0])
+    pixels = []
     for i in range(len(pattern)):
         if i == testDotIndex:
-            pixels = np.append(pixels, testDot)
+            pixels.append(testDot)
         else:
-            pixels = np.append(pixels, testBlank)
+            pixels.append(testBlank)
     testDotIndex = testDotIndex + 1
     if(testDotIndex >= len(pattern)):
         testDotIndex = 0
     return pixels
     
 def blank(pattern):
-    pixels = np.empty([0])
+    pixels = []
     for led in pattern:
-        pixels = np.append(pixels, testBlank)
+        pixels.append(testBlank)
     return pixels
 
 def test(testSectionIdx):
     for t in range(len(sections[testSectionIdx]['pattern'])):
         s = 0
-        pixels = np.empty([0])
+        pixels = []
         for section in sections:
             if s == testSectionIdx:
-                pixels = np.append(pixels, testPattern(section['pattern']))
+                pixels.append(testPattern(section['pattern']))
             else:
-                pixels = np.append(pixels, blank(section['pattern']))
+                pixels.append(blank(section['pattern']))
             s = s +1
         leds.putPixels(0, pixels)
         if None != screen:
