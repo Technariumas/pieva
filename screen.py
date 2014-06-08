@@ -30,24 +30,27 @@ class Screen():
         return pixmap
         
     def getPixelsFor(self, section, bitmap):
-        pixels = []
+        pixels = [None] * len(section['pattern'])
         for i in range(len(section['pattern'])):
             y = section['map'][i][1]
             x = section['map'][i][0]
-            pixels += toRGBBytes(bitmap[y, x])
+            pixels[i] = toRGBBytes(bitmap[y, x])
         return pixels
 
 
     def send(self, bitmap):
         tosend = []
+        
         startTime = time.time()
         for section in sections:
             tosend += self.getPixelsFor(section, bitmap)
         endTime = time.time()
         print("preparation time: ", (endTime - startTime))
+        
         startTime = time.time()
         self.leds.putPixels(0, tosend)
         endTime = time.time()
         print("pixel push time:  ", (endTime - startTime))
+        
         for aux in self.auxscreens:
             aux.putPixels(0, tosend)
