@@ -1,5 +1,6 @@
 from pieva import *
 import fastopc as opc
+import time
 
 def toRGBBytes(value):
     value = int(value)
@@ -25,8 +26,14 @@ class Screen():
 
     def send(self, bitmap):
         tosend = []
+        startTime = time.time()
         for section in sections:
             tosend += self.getPixelsFor(section['pattern'], section['startX'], section['startY'], bitmap)
+        endTime = time.time()
+        print("preparation time: ", (endTime - startTime))
+        startTime = time.time()
         self.leds.putPixels(0, tosend)
+        endTime = time.time()
+        print("pixel push time:  ", (endTime - startTime))
         for aux in self.auxscreens:
             aux.putPixels(0, tosend)
