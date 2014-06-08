@@ -32,7 +32,7 @@ generateNoise(32, 32, noiseTime)
 targetFPS = 24
 targetFrameTime = 1./targetFPS
 
-screen = Screen(['127.0.0.1:7891'])
+screen = Screen()#['127.0.0.1:7891'])
 
 print("eina.. Control+C to stop")
 while True:
@@ -46,6 +46,7 @@ while True:
         endTime = time.time()
         #print (endTime - startTime)
         timeToWait = targetFrameTime - (endTime - startTime)
+        print("Frame time: ", (endTime - startTime))
         if timeToWait < 0:
             print("late!", timeToWait)
             timeToWait = 0
