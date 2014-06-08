@@ -34,7 +34,7 @@ class Screen():
         for i in range(len(section['pattern'])):
             y = section['map'][i][1]
             x = section['map'][i][0]
-            pixels[i] = toRGBBytes(bitmap[y, x])
+            pixels[i] = toRGBBytes(bitmap[y][x])
         return pixels
 
 
@@ -47,7 +47,7 @@ class Screen():
             for i in range(len(section['pattern'])):
                 y = section['map'][i][1]
                 x = section['map'][i][0]
-                value = int(bitmap[y, x])
+                value = int(bitmap[y][x])
                 #toRGBBytes(bitmap[y, x])
                 tosend[ledsSent] =  ((value >> 16) & 0x0000FF)
                 ledsSent += 1
