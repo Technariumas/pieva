@@ -1,0 +1,6 @@
+[submodule "fadecandy"]
+	path = fadecandy
+	url = https://github.com/scanlime/fadecandy.git
+[submodule "openpixelcontrol"]
+	path = openpixelcontrol
+	url = https://github.com/zestyping/openpixelcontrol.git
