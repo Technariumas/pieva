@@ -34,10 +34,13 @@ def test(testSectionIdx):
             else:
                 pixels.append(blank(section['pattern']))
             s = s +1
-        leds.putPixels(0, pixels)
+        startTime = time.time() 
+	leds.putPixels(0, pixels)
+	endTime = time.time()
+	print "pushing pixels in", (endTime - startTime), "s"
         if None != screen:
             screen.putPixels(0, pixels)
-        time.sleep(0.02)
+        time.sleep(0.01)
 
 parser = ArgumentParser(description = "Play test sequences")
 parser.add_argument("testSection", type=int, action="store", default=None, nargs="?", help=" - which section to test. All sections will be tested if omitted")
