@@ -1,6 +1,14 @@
 from pieva import *
 import fastopc as opc
+import numpy as np
 import time
+
+import sys 
+
+del sys.path[0]
+sys.path.append('')
+
+import core.pixelMapper
 
 def toRGBBytes(value):
     value = int(value)
@@ -11,12 +19,14 @@ class Screen():
     auxscreens = []
     pixelMap = []
     
+    
     def __init__(self, auxscreens = []):
         if None != auxscreens:
             for aux in auxscreens:
                 self.auxscreens.append(opc.FastOPC(aux))
         for section in sections:
             self.pixelMap += self.createMapFor(section)
+        self.pixelMapPacked = np.array(self.pixelMap).astype(np.int8).tostring()
             
     def createMapFor(self, section):
         pixmap = []
@@ -37,8 +47,12 @@ class Screen():
             pixels[i] = toRGBBytes(bitmap[y, x])
         return pixels
 
-
     def send(self, bitmap):
+        bitmapPacked = bitmap.astype(np.int32).tostring()
+        tosend = core.pixelMapper.map(self.pixelMapPacked, bitmapPacked)
+        self.leds.putPixels(0, tosend)
+
+    def sendold(self, bitmap):
         tosend = [None] * 3072
         
         startTime = time.time()
