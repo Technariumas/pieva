@@ -48,10 +48,6 @@ class Screen():
         return pixels
 
     def send(self, bitmap):
-        for i in range(32):
-            bitmap[i,i] = 0x00ffffff
-            bitmap[31-i,i] = 0x00FF0000
-            
         bitmapPacked = bitmap.astype(np.int32)
         tosend = core.pixelMapper.map(self.pixelMapPacked, bitmapPacked.tostring())
         self.leds.putPixels(0, tosend)

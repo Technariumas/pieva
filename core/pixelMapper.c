@@ -1,11 +1,12 @@
 #include <Python.h>
 #include <stdio.h>
+#include <inttypes.h>
 
 #define ALWAYS_INLINE __attribute__((always_inline))
 
 typedef struct {
-    const unsigned char *model;
-    const unsigned int *bitmap;
+    const uint8_t *model;
+    const uint32_t *bitmap;
     int pixelCount;
 } MapArgs_t;
 
