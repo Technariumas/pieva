@@ -5,7 +5,7 @@
 
 typedef struct {
     const unsigned char *model;
-    const unsigned char *bitmap;
+    const unsigned long *bitmap;
     int pixelCount;
 } MapArgs_t;
 
@@ -17,10 +17,10 @@ inline static void ALWAYS_INLINE map(MapArgs_t args, char *pixels) {
         y = args.model[1];
         args.model += 2;
         
-        r = args.bitmap[0];
-        g = args.bitmap[1];
-        b = args.bitmap[2];
-        args.bitmap += 3;
+        r = (args.bitmap[0] >> 16) & 0x000000FF;
+        g = (args.bitmap[0] >> 8) & 0x000000FF;
+        b = args.bitmap[0] & 0x000000FF;
+        args.bitmap ++;
         
         pixels[0] = r;
         pixels[1] = g;
