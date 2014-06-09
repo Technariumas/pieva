@@ -1,6 +1,7 @@
 #include <Python.h>
 #include <stdio.h>
 #include <inttypes.h>
+#include "noise.h"
 
 #define ALWAYS_INLINE __attribute__((always_inline))
 
@@ -9,6 +10,8 @@ typedef struct {
     const uint32_t *bitmap;
     int pixelCount;
 } MapArgs_t;
+
+unsigned long frameCounter = 0;
 
 inline static void ALWAYS_INLINE map(MapArgs_t args, char *pixels) {
     while (args.pixelCount--) {
@@ -21,13 +24,16 @@ inline static void ALWAYS_INLINE map(MapArgs_t args, char *pixels) {
         g = (args.bitmap[x + y * 32] >> 8) & 0x000000FF;
         b = args.bitmap[x + y * 32] & 0x000000FF;
         
+        float v = fbm_noise3((float)x/32, (float)y/32, (float)frameCounter/100, 5, 0.7, 2.0);
+        
         //printf("%d,%d = %d, %d, %d\n", x,y,r,g,b);
         
-        pixels[0] = r;
-        pixels[1] = g;
-        pixels[2] = b;
+        pixels[0] = v * 127+128;
+        pixels[1] = v * 127+128;
+        pixels[2] = v * 127+128;
         pixels += 3;
     }
+    frameCounter++;
 }
 
 
