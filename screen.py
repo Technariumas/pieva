@@ -48,36 +48,12 @@ class Screen():
         return pixels
 
     def send(self, bitmap):
-        bitmapPacked = bitmap.astype(np.int32).tostring()
-        tosend = core.pixelMapper.map(self.pixelMapPacked, bitmapPacked)
-        self.leds.putPixels(0, tosend)
-
-    def sendold(self, bitmap):
-        tosend = [None] * 3072
-        
-        startTime = time.time()
-        ledsSent = 0
-        for section in sections:
-            for i in range(len(section['pattern'])):
-                y = section['map'][i][1]
-                x = section['map'][i][0]
-                value = int(bitmap[y, x])
-                #toRGBBytes(bitmap[y, x])
-                tosend[ledsSent] =  ((value >> 16) & 0x0000FF)
-                ledsSent += 1
-                tosend[ledsSent] =  ((value >> 8) & 0x0000FF)
-                ledsSent += 1
-                tosend[ledsSent] =  (value & 0x0000FF)
-                ledsSent += 1
+        for i in range(32):
+            bitmap[i,i] = 0x00ffffff
+            bitmap[31-i,i] = 0x00FF0000
             
-        #tosend += self.getPixelsFor(section, bitmap)
-        endTime = time.time()
-        print("preparation time: ", (endTime - startTime))
-        
-        startTime = time.time()
+        bitmapPacked = bitmap.astype(np.int32)
+        tosend = core.pixelMapper.map(self.pixelMapPacked, bitmapPacked.tostring())
         self.leds.putPixels(0, tosend)
-        endTime = time.time()
-        print("pixel push time:  ", (endTime - startTime))
-        
         for aux in self.auxscreens:
             aux.putPixels(0, tosend)

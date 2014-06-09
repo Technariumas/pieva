@@ -5,7 +5,7 @@
 
 typedef struct {
     const unsigned char *model;
-    const unsigned long *bitmap;
+    const unsigned int *bitmap;
     int pixelCount;
 } MapArgs_t;
 
@@ -16,11 +16,11 @@ inline static void ALWAYS_INLINE map(MapArgs_t args, char *pixels) {
         x = args.model[0];
         y = args.model[1];
         args.model += 2;
+        r = (args.bitmap[x + y * 32] >> 16) & 0x000000FF;
+        g = (args.bitmap[x + y * 32] >> 8) & 0x000000FF;
+        b = args.bitmap[x + y * 32] & 0x000000FF;
         
-        r = (args.bitmap[0] >> 16) & 0x000000FF;
-        g = (args.bitmap[0] >> 8) & 0x000000FF;
-        b = args.bitmap[0] & 0x000000FF;
-        args.bitmap ++;
+        //printf("%d,%d = %d, %d, %d\n", x,y,r,g,b);
         
         pixels[0] = r;
         pixels[1] = g;
@@ -39,14 +39,21 @@ static PyObject* py_map(PyObject* self, PyObject* args)
     PyObject *result = NULL;
     Py_ssize_t tmp;
 
-    if (!PyArg_ParseTuple(args, "t#t#:map",
+    if (!PyArg_ParseTuple(args, "t#s#:map",
         &arguments.model, &modelBytes,
-        &arguments.bitmap,  &bitmapBytes)) {
+        &arguments.bitmap,  &bitmapBytes
+        )) {
         return NULL;
     }
-    //~ printf("got %d bytes in model and %d bytes in bitmap\n", modelBytes, bitmapBytes);
+
+    //~ for (i = 0; i < bitmapBytes / 4; i++) {
+        //~ printf("%d ", arguments.bitmap[i]);
+    //~ }
 
     arguments.pixelCount = modelBytes / 2;
+
+    //~ printf("\ngot %d bytes in model and %d bytes in bitmap, pixelcount: %d\n", modelBytes, bitmapBytes, arguments.pixelCount);
+
 
     result = PyBuffer_New(arguments.pixelCount * 3);
     if (result) {
