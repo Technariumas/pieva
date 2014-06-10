@@ -34,13 +34,13 @@ generateNoise(32, 32, noiseTime)
 targetFPS = 24
 targetFrameTime = 1./targetFPS
 
-screen = Screen()#['127.0.0.1:7891'])
+screen = Screen(['127.0.0.1:7891'])
 
 frameCount = 0
 print("eina.. Control+C to stop")
 while True:
     for z in range(noiseTime):
-        bitmap = list(pixelMapper.get2dNoise(32,32, frameCount, 5,0.7,2))
+        bitmap = pixelMapper.get2dNoise(32,32, frameCount, 5,0.7,2)
 
         startTime = time.time()
 

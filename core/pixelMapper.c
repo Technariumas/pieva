@@ -24,15 +24,15 @@ unsigned long frameCounter = 0;
 
 inline static PyObject* ALWAYS_INLINE get2dNoise(GetNoiseArgs_t args){
     int i,j;
-    PyObject *result = PyTuple_New(args.width);
+    PyObject *result = PyList_New(args.width);
 
     for(i = 0; i < args.width; i++) {
-        PyObject *row = PyTuple_New(args.height);
+        PyObject *row = PyList_New(args.height);
         for(j = 0; j < args.height; j++) {
             uint8_t noisedot = fbm_noise3((float)i/args.width, (float)j/args.height, args.time, args.octaves, args.persistence, args.lacunarity) * 127 + 128;
-            PyTuple_SetItem(row, j, PyInt_FromLong(noisedot)); 
+            PyList_SetItem(row, j, PyInt_FromLong(noisedot)); 
         }
-        PyTuple_SetItem(result, i, row);
+        PyList_SetItem(result, i, row);
     }
     return result;
 }
