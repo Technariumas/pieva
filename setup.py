@@ -12,7 +12,10 @@ setup(
     packages=['core'],
     
 	ext_modules=[
-		Extension('core.pixelMapper', ['core/pixelMapper.c'], 
+		Extension('core.PixelMapper', ['core/pixelMapper.c'], 
+			extra_compile_args=['-Os', '-funroll-loops', '-ffast-math'],
+		),
+		Extension('core.NoiseGenerator', ['core/noiseGenerator.c'], 
 			extra_compile_args=['-Os', '-funroll-loops', '-ffast-math'],
 		),
 	],

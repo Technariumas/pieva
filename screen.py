@@ -8,7 +8,7 @@ import sys
 del sys.path[0]
 sys.path.append('')
 
-import core.pixelMapper
+import core.PixelMapper
 
 def toRGBBytes(value):
     value = int(value)
@@ -49,7 +49,7 @@ class Screen():
 
     def send(self, bitmap):
         bitmapPacked = struct.pack('I'*len(bitmap)*len(bitmap[0]), *(j for i in bitmap for j in i)) 
-	tosend = core.pixelMapper.map(self.pixelMapPacked, bitmapPacked)
+	tosend = core.PixelMapper.map(self.pixelMapPacked, bitmapPacked)
         self.leds.putPixels(0, tosend)
         for aux in self.auxscreens:
             aux.putPixels(0, tosend)
