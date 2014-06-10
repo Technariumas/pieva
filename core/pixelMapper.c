@@ -11,7 +11,26 @@ typedef struct {
     int pixelCount;
 } MapArgs_t;
 
+typedef struct {
+    const uint8_t width;
+    const uint8_t height;
+    const uint32_t time;
+    const uint8_t octaves;
+    const float persistence;
+    const float lacunarity;
+} GetNoiseArgs_t;
+
 unsigned long frameCounter = 0;
+
+inline static void ALWAYS_INLINE get2dNoise(GetNoiseArgs_t args, char* buffer){
+    int i,j;
+    for(i = 0; i < args.width; i++) {
+        for(j = 0; j < args.height; j++) {
+            buffer[0] = fbm_noise3((float)i/args.width, (float)j/args.height, args.time, args.octaves, args.persistence, args.lacunarity) * 127 + 128;
+            buffer++;
+        }
+    }
+}
 
 inline static void ALWAYS_INLINE map(MapArgs_t args, char *pixels) {
     while (args.pixelCount--) {
@@ -25,16 +44,40 @@ inline static void ALWAYS_INLINE map(MapArgs_t args, char *pixels) {
         g = (args.bitmap[x + y * 32] >> 8) & 0x000000FF;
         b = args.bitmap[x + y * 32] & 0x000000FF;
         
-        float v = fbm_noise3((float)x/32, (float)y/32, (float)frameCounter/100, 5, 0.7, 2.0);
-        
-        pixels[0] = v * 127+128;
-        pixels[1] = v * 127+128;
-        pixels[2] = v * 127+128;
+        pixels[0] = r;
+        pixels[1] = g;
+        pixels[2] = b;
         pixels += 3;
     }
     frameCounter++;
 }
 
+
+
+static PyObject* py_get2dNoise(PyObject* self, PyObject* args) {
+    GetNoiseArgs_t arguments;
+    char *buffer;
+    Py_ssize_t tmp;
+    
+    if (!PyArg_ParseTuple(args, "iiliff:map",
+        &arguments.width,
+        &arguments.height,
+        &arguments.time,
+        &arguments.octaves,
+        &arguments.persistence,
+        &arguments.lacunarity)) {
+        return NULL;
+    }
+    
+    PyObject *result = PyBuffer_New(arguments.width * arguments.height);
+    if (result) {
+        PyObject_AsWriteBuffer(result, (void**) &buffer, &tmp);
+        
+        get2dNoise(arguments, buffer);
+    }
+
+    return result;
+}
 
 static PyObject* py_map(PyObject* self, PyObject* args)
 {
@@ -52,14 +95,7 @@ static PyObject* py_map(PyObject* self, PyObject* args)
         return NULL;
     }
 
-    //~ for (i = 0; i < bitmapBytes / 4; i++) {
-        //~ printf("%d ", arguments.bitmap[i]);
-    //~ }
-
     arguments.pixelCount = modelBytes / 2;
-
-    //~ printf("\ngot %d bytes in model and %d bytes in bitmap, pixelcount: %d\n", modelBytes, bitmapBytes, arguments.pixelCount);
-
 
     result = PyBuffer_New(arguments.pixelCount * 3);
     if (result) {
@@ -67,25 +103,24 @@ static PyObject* py_map(PyObject* self, PyObject* args)
         map(arguments, pixels);
     }
 
-    //PyMem_Free(ca.lightning);
     return result;
 }
 
-static PyMethodDef cloud_functions[] = {
+static PyMethodDef native_functions[] = {
     { "map", (PyCFunction)py_map, METH_VARARGS,
-        "render(model, matrix, colors, contrast, lightning) -- return rendered RGB pixels, as a string\n\n"
-        "model -- (x,y,z) coordinates for each LED, represented as a string of packed 32-bit floats\n"
-        "matrix -- List of 16 floats; a column-major 4x4 matrix which model coordinates are multiplied by\n"
-        "colors -- (r,g,b) base color for each pixel, as a string of packed 32-bit floats\n"
-        "contrast -- Proportion of base color to modulate with noise field\n"
-        "lightning -- List of lightning points, in model space. Each one is an (x, y, z, r, g, b, falloff) tuple\n"
+        "render(model, bitmap) -- return rendered RGB pixels, as a string\n\n"
+        "model -- (x,y) coordinates for each LED, represented as a string of packed 8-bit ints\n"
+        "bitmap -- bitmap pixels, 32-bit each, represented as a string of packed 32-bit ints"
+    },
+    { "get2dNoise", (PyCFunction)py_get2dNoise, METH_VARARGS,
+        "get2dNoise -- return a twodimensional array of perlin noise\n\n"
     },
     {NULL}
 };
 
-PyDoc_STRVAR(module_doc, "Native-code cloud lighting effect core");
+PyDoc_STRVAR(module_doc, "Native-code utilities for faster data structure mangling");
 
 void initpixelMapper(void)
 {
-    Py_InitModule3("pixelMapper", cloud_functions, module_doc);
+    Py_InitModule3("pixelMapper", native_functions, module_doc);
 }
