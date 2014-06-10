@@ -25,10 +25,12 @@ timeCounter = 0
 print("eina.. Control+C to stop")
 while True:
     bitmap = NoiseGenerator.get2dNoise(32,32, timeCounter/20.0, mainNoiseParams.octaves, mainNoiseParams.persistence, mainNoiseParams.lacunarity)
-
+    biteleXX = NoiseGenerator.get2dNoise(1,10, timeCounter/20., 7, 0.5, 2)
+    biteleYY = NoiseGenerator.get2dNoise(1,10, 2+timeCounter/20., 7, 0.5, 2)
+    #print biteleXY
     startTime = time.time()
 
-    #bitmap[int(biteleX[0,z])][int(biteleY[0,z])] = 0x00FF0000 
+    bitmap[int(biteleXX[0][9] / 255. * 15 + 16) - 7][int(biteleYY[0][9] / 255. * 15 + 16) -7] = 0x00FFFF00 
     screen.send(bitmap)
 
     endTime = time.time()
