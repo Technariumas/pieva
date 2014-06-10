@@ -4,6 +4,7 @@ from screen import Screen
 import numpy as np
 import time
 import fastopc as opc
+from core import pixelMapper
 
 bitmap = np.zeros((32, 32)) * 255
 
@@ -35,14 +36,15 @@ targetFrameTime = 1./targetFPS
 
 screen = Screen(['127.0.0.1:7891'])
 
+frameCount = 0
 print("eina.. Control+C to stop")
 while True:
     for z in range(noiseTime):
-        bitmap = noise[:,:,z]
+        bitmap = np.asarray(pixelMapper.get2dNoise(32,32, frameCount, 5,0.7,2))
 
         startTime = time.time()
 
-        bitmap[int(biteleX[0,z]), int(biteleY[0,z])] = 0x00FF0000 
+        bitmap[int(biteleX[0,z])][int(biteleY[0,z])] = 0x00FF0000 
         screen.send(bitmap)
 
         endTime = time.time()
@@ -52,3 +54,4 @@ while True:
             print("late!", timeToWait)
             timeToWait = 0
         time.sleep(timeToWait)
+        frameCount +=1

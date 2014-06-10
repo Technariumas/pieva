@@ -22,14 +22,19 @@ typedef struct {
 
 unsigned long frameCounter = 0;
 
-inline static void ALWAYS_INLINE get2dNoise(GetNoiseArgs_t args, char* buffer){
+inline static PyObject* ALWAYS_INLINE get2dNoise(GetNoiseArgs_t args){
     int i,j;
+    PyObject *result = PyTuple_New(args.width);
+
     for(i = 0; i < args.width; i++) {
+        PyObject *row = PyTuple_New(args.height);
         for(j = 0; j < args.height; j++) {
-            buffer[0] = fbm_noise3((float)i/args.width, (float)j/args.height, args.time, args.octaves, args.persistence, args.lacunarity) * 127 + 128;
-            buffer++;
+            uint8_t noisedot = fbm_noise3((float)i/args.width, (float)j/args.height, args.time, args.octaves, args.persistence, args.lacunarity) * 127 + 128;
+            PyTuple_SetItem(row, j, PyInt_FromLong(noisedot)); 
         }
+        PyTuple_SetItem(result, i, row);
     }
+    return result;
 }
 
 inline static void ALWAYS_INLINE map(MapArgs_t args, char *pixels) {
@@ -56,8 +61,6 @@ inline static void ALWAYS_INLINE map(MapArgs_t args, char *pixels) {
 
 static PyObject* py_get2dNoise(PyObject* self, PyObject* args) {
     GetNoiseArgs_t arguments;
-    char *buffer;
-    Py_ssize_t tmp;
     
     if (!PyArg_ParseTuple(args, "iiliff:map",
         &arguments.width,
@@ -68,21 +71,21 @@ static PyObject* py_get2dNoise(PyObject* self, PyObject* args) {
         &arguments.lacunarity)) {
         return NULL;
     }
-    
-    PyObject *result = PyBuffer_New(arguments.width * arguments.height);
-    if (result) {
-        PyObject_AsWriteBuffer(result, (void**) &buffer, &tmp);
-        
-        get2dNoise(arguments, buffer);
-    }
 
-    return result;
+    //~ PyObject *result = PyBuffer_New(arguments.width * arguments.height);
+    //~ if (result) {
+        //~ PyObject_AsWriteBuffer(result, (void**) &buffer, &tmp);
+        //~ 
+        //~ get2dNoise(arguments, buffer);
+    //~ }
+
+    return get2dNoise(arguments);
 }
 
 static PyObject* py_map(PyObject* self, PyObject* args)
 {
     MapArgs_t arguments;
-    int i, modelBytes, bitmapBytes;
+    int modelBytes, bitmapBytes;
 
     char *pixels;
     PyObject *result = NULL;
