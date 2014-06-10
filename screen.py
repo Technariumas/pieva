@@ -48,7 +48,7 @@ class Screen():
         return pixels
 
     def send(self, bitmap):
-        bitmapPacked = struct.pack('L'*len(bitmap)*len(bitmap[0]), *(j for i in bitmap for j in i)) 
+        bitmapPacked = struct.pack('I'*len(bitmap)*len(bitmap[0]), *(j for i in bitmap for j in i)) 
 	tosend = core.pixelMapper.map(self.pixelMapPacked, bitmapPacked)
         self.leds.putPixels(0, tosend)
         for aux in self.auxscreens:
