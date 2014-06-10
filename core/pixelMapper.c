@@ -20,13 +20,12 @@ inline static void ALWAYS_INLINE map(MapArgs_t args, char *pixels) {
         x = args.model[0];
         y = args.model[1];
         args.model += 2;
+
         r = (args.bitmap[x + y * 32] >> 16) & 0x000000FF;
         g = (args.bitmap[x + y * 32] >> 8) & 0x000000FF;
         b = args.bitmap[x + y * 32] & 0x000000FF;
         
         float v = fbm_noise3((float)x/32, (float)y/32, (float)frameCounter/100, 5, 0.7, 2.0);
-        
-        //printf("%d,%d = %d, %d, %d\n", x,y,r,g,b);
         
         pixels[0] = v * 127+128;
         pixels[1] = v * 127+128;

@@ -1,3 +1,4 @@
+#!/usr/bin/python
 from pieva import *
 from screen import Screen
 import numpy as np
@@ -11,7 +12,7 @@ octaves = 5
 freq = 16.0 * octaves
 
 
-noiseTime = 2000
+noiseTime = 200
 noise = np.zeros([32,32,noiseTime])
 biteleX = np.zeros([32,noiseTime])
 biteleY = np.zeros([32,noiseTime])
@@ -32,19 +33,19 @@ generateNoise(32, 32, noiseTime)
 targetFPS = 24
 targetFrameTime = 1./targetFPS
 
-screen = Screen()#['127.0.0.1:7891'])
+screen = Screen(['127.0.0.1:7891'])
 
 print("eina.. Control+C to stop")
 while True:
     for z in range(noiseTime):
         bitmap = noise[:,:,z]
-        #print biteleX[0,z], biteleY[0,z]
+
         startTime = time.time()
+
         bitmap[int(biteleX[0,z]), int(biteleY[0,z])] = 0x00FF0000 
-        #~ bitmap[31,23] = 0x00FFFFFF
         screen.send(bitmap)
+
         endTime = time.time()
-        #print (endTime - startTime)
         timeToWait = targetFrameTime - (endTime - startTime)
         print("Frame time: ", (endTime - startTime))
         if timeToWait < 0:
