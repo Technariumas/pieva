@@ -47,8 +47,8 @@ while True:
 
         endTime = time.time()
         timeToWait = targetFrameTime - (endTime - startTime)
-        print("Frame time: ", (endTime - startTime))
         if timeToWait < 0:
+            print("Frame time: ", (endTime - startTime))
             print("late!", timeToWait)
             timeToWait = 0
         time.sleep(timeToWait)

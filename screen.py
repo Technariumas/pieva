@@ -44,7 +44,7 @@ class Screen():
         for i in range(len(section['pattern'])):
             y = section['map'][i][1]
             x = section['map'][i][0]
-            pixels[i] = toRGBBytes(bitmap[y, x])
+            pixels[i] = toRGBBytes(bitmap[y][x])
         return pixels
 
     def send(self, bitmap):
