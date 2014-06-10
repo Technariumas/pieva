@@ -1,3 +1,4 @@
+#!/usr/bin/python
 from pieva import *
 from screen import Screen
 import numpy as np
@@ -11,8 +12,8 @@ octaves = 5
 freq = 16.0 * octaves
 
 
-noiseTime = 20
-noise = [[[0]*32]*32]*noiseTime
+noiseTime = 200
+noise = np.zeros([32,32,noiseTime])
 biteleX = np.zeros([32,noiseTime])
 biteleY = np.zeros([32,noiseTime])
 
@@ -22,7 +23,7 @@ def generateNoise(width, height, noiseTime = 2000):
         for x in range(width):
             for y in range(height):
                 v = snoise3(x / freq, y / freq, z / freq, octaves, persistence=0.7)
-                noise[z][y][x] = (int(v * 20.0 + 20) << 16) | (int(v * 127.0 + 128) << 8) | (int(40 * v) + 80)
+                noise[x,y,z] = (int(v * 20.0 + 20) << 16) | (int(v * 127.0 + 128) << 8) | (int(40 * v) + 80)
 #                print '\r', z, ' of ', noiseTime,
             biteleX[x,z] = int(snoise2(x / 16., z / 16., 4, base=0, repeaty = noiseTime) * 15.0 + 16)
             biteleY[x,z] = int(snoise2(x / 16., z / 16., 4, base=1, repeaty = noiseTime) * 15.0 + 16)
@@ -37,14 +38,14 @@ screen = Screen(['127.0.0.1:7891'])
 print("eina.. Control+C to stop")
 while True:
     for z in range(noiseTime):
-        bitmap = noise[z]
-        #print biteleX[0,z], biteleY[0,z]
+        bitmap = noise[:,:,z]
+
         startTime = time.time()
-        bitmap[int(biteleX[0,z])][int(biteleY[0,z])] = 0x00FF0000 
-        #~ bitmap[31,23] = 0x00FFFFFF
+
+        bitmap[int(biteleX[0,z]), int(biteleY[0,z])] = 0x00FF0000 
         screen.send(bitmap)
+
         endTime = time.time()
-        #print (endTime - startTime)
         timeToWait = targetFrameTime - (endTime - startTime)
         if timeToWait < 0:
             print("Frame time: ", (endTime - startTime))

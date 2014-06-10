@@ -1,6 +1,14 @@
 from pieva import *
 import fastopc as opc
+import numpy as np
 import time
+
+import sys 
+
+del sys.path[0]
+sys.path.append('')
+
+import core.pixelMapper
 
 def toRGBBytes(value):
     value = int(value)
@@ -11,12 +19,14 @@ class Screen():
     auxscreens = []
     pixelMap = []
     
+    
     def __init__(self, auxscreens = []):
         if None != auxscreens:
             for aux in auxscreens:
                 self.auxscreens.append(opc.FastOPC(aux))
         for section in sections:
             self.pixelMap += self.createMapFor(section)
+        self.pixelMapPacked = np.array(self.pixelMap).astype(np.int8).tostring()
             
     def createMapFor(self, section):
         pixmap = []
@@ -37,33 +47,9 @@ class Screen():
             pixels[i] = toRGBBytes(bitmap[y][x])
         return pixels
 
-
     def send(self, bitmap):
-        tosend = [None] * 3072
-        
-        startTime = time.time()
-        ledsSent = 0
-        for section in sections:
-            for i in range(len(section['pattern'])):
-                y = section['map'][i][1]
-                x = section['map'][i][0]
-                value = int(bitmap[y][x])
-                #toRGBBytes(bitmap[y, x])
-                tosend[ledsSent] =  ((value >> 16) & 0x0000FF)
-                ledsSent += 1
-                tosend[ledsSent] =  ((value >> 8) & 0x0000FF)
-                ledsSent += 1
-                tosend[ledsSent] =  (value & 0x0000FF)
-                ledsSent += 1
-            
-        #tosend += self.getPixelsFor(section, bitmap)
-        endTime = time.time()
-        print("preparation time: ", (endTime - startTime))
-        
-        startTime = time.time()
+        bitmapPacked = bitmap.astype(np.int32)
+        tosend = core.pixelMapper.map(self.pixelMapPacked, bitmapPacked.tostring())
         self.leds.putPixels(0, tosend)
-        endTime = time.time()
-        print("pixel push time:  ", (endTime - startTime))
-        
         for aux in self.auxscreens:
             aux.putPixels(0, tosend)
