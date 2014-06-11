@@ -2,7 +2,7 @@ from pieva import *
 import fastopc as opc
 import numpy as np
 import time
-
+import struct
 import sys 
 
 del sys.path[0]
@@ -48,8 +48,8 @@ class Screen():
         return pixels
 
     def send(self, bitmap):
-        bitmapPacked = bitmap.astype(np.int32)
-        tosend = core.pixelMapper.map(self.pixelMapPacked, bitmapPacked.tostring())
+        bitmapPacked = struct.pack('L'*len(bitmap)*len(bitmap[0]), *(j for i in bitmap for j in i)) 
+	tosend = core.pixelMapper.map(self.pixelMapPacked, bitmapPacked)
         self.leds.putPixels(0, tosend)
         for aux in self.auxscreens:
             aux.putPixels(0, tosend)

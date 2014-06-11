@@ -13,7 +13,7 @@ octaves = 5
 freq = 16.0 * octaves
 
 
-noiseTime = 200
+noiseTime = 2
 noise = np.zeros([32,32,noiseTime])
 biteleX = np.zeros([32,noiseTime])
 biteleY = np.zeros([32,noiseTime])
@@ -34,23 +34,23 @@ generateNoise(32, 32, noiseTime)
 targetFPS = 24
 targetFrameTime = 1./targetFPS
 
-screen = Screen(['127.0.0.1:7891'])
+screen = Screen()#['127.0.0.1:7891'])
 
 frameCount = 0
 print("eina.. Control+C to stop")
 while True:
     for z in range(noiseTime):
-        bitmap = np.asarray(pixelMapper.get2dNoise(32,32, frameCount, 5,0.7,2))
+        bitmap = list(pixelMapper.get2dNoise(32,32, frameCount, 5,0.7,2))
 
         startTime = time.time()
 
-        bitmap[int(biteleX[0,z])][int(biteleY[0,z])] = 0x00FF0000 
+        #bitmap[int(biteleX[0,z])][int(biteleY[0,z])] = 0x00FF0000 
         screen.send(bitmap)
 
         endTime = time.time()
         timeToWait = targetFrameTime - (endTime - startTime)
+	print("Frame time: ", (endTime - startTime))
         if timeToWait < 0:
-            print("Frame time: ", (endTime - startTime))
             print("late!", timeToWait)
             timeToWait = 0
         time.sleep(timeToWait)
