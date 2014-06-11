@@ -1,7 +1,11 @@
 #include <Python.h>
 #include <inttypes.h>
 #include "noise.h"
+#include <stdio.h>
+
 #define ALWAYS_INLINE __attribute__((always_inline))
+
+#define MAX_COLORS 255
 
 typedef struct {
     const uint8_t width;
@@ -10,6 +14,8 @@ typedef struct {
     const uint8_t octaves;
     const float persistence;
     const float lacunarity;
+    const uint8_t *palette;
+    const uint16_t paletteLength
 } GetNoiseArgs_t;
 
 inline static PyObject* ALWAYS_INLINE get2dNoise(GetNoiseArgs_t args){
@@ -19,8 +25,12 @@ inline static PyObject* ALWAYS_INLINE get2dNoise(GetNoiseArgs_t args){
     for(i = 0; i < args.width; i++) {
         PyObject *row = PyList_New(args.height);
         for(j = 0; j < args.height; j++) {
-            uint8_t noisedot = fbm_noise3((float)i/args.width, (float)j/args.height, args.time, args.octaves, args.persistence, args.lacunarity) * 127 + 128;
-            PyList_SetItem(row, j, PyInt_FromLong(noisedot)); 
+            float v = fbm_noise3((float)i/args.width, (float)j/args.height, args.time, args.octaves, args.persistence, args.lacunarity);
+            uint8_t index = (int)(v * 127 + 128);
+            uint8_t r = args.palette[index * 3];
+            uint8_t g = args.palette[index * 3 + 1];
+            uint8_t b = args.palette[index * 3 + 2];
+            PyList_SetItem(row, j, PyInt_FromLong(r << 16 | g << 8 | b)); 
         }
         PyList_SetItem(result, i, row);
     }
@@ -30,13 +40,15 @@ inline static PyObject* ALWAYS_INLINE get2dNoise(GetNoiseArgs_t args){
 static PyObject* py_get2dNoise(PyObject* self, PyObject* args) {
     GetNoiseArgs_t arguments;
     
-    if (!PyArg_ParseTuple(args, "iififf:map",
+    if (!PyArg_ParseTuple(args, "iififft#:map",
         &arguments.width,
         &arguments.height,
         &arguments.time,
         &arguments.octaves,
         &arguments.persistence,
-        &arguments.lacunarity)) {
+        &arguments.lacunarity,
+        &arguments.palette,
+        &arguments.paletteLength)) {
         return NULL;
     }
 
