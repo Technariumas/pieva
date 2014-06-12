@@ -27,8 +27,8 @@ x - pasikartojantis 3d noizas
 - DHCP į raspi
 - raspi wifi access point
 x - Transliavimo softą į raspi
- - raspi fcserver autostart
- - raspi pievastreamer autostart
+x - raspi fcserver autostart
+x - raspi pievastreamer autostart
  - raspi ventiliatorius?
  - git serverį ant veikia
 x - padaryt pievos mappingą su zigzagais
