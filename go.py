@@ -7,8 +7,8 @@ import fastopc as opc
 from core import NoiseGenerator
 
 class NoiseParams:
-    width = 32
-    height = 32
+    width = 120
+    height = 120
     octaves = 1
     persistence = 0.5
     lacunarity = 2.0
@@ -19,7 +19,7 @@ class NoiseParams:
         self.persistence = persistence
         self.lacunarity = lacunarity
         
-mainNoiseParams = NoiseParams(32*4, 32*4, 5, 0.7, 2.0)
+mainNoiseParams = NoiseParams(140, 140, 5, 0.7, 2.0)
 
 class ColorPalette:
     palette = [
@@ -28,7 +28,6 @@ class ColorPalette:
     def __init__(self, startColor = None, endColor = None):
         if startColor != None and endColor != None:
             self.palette = self.generatePalette(startColor, endColor)
-        print self.palette
         self.packed = np.array(self.palette).astype(np.int8).tostring()
 
     def generatePalette(self, startColor, endColor):
@@ -38,7 +37,7 @@ class ColorPalette:
        return np.array([r,g,b]).T
         
 
-startColor = [0, 128, 40]
+startColor = [0, 128, 20]
 endColor = [255, 255, 0]
 mainPalette = ColorPalette(startColor, endColor)
 
@@ -60,7 +59,7 @@ while True:
 
     endTime = time.time()
     timeToWait = targetFrameTime - (endTime - startTime)
-    print("Frame time: ", (endTime - startTime))
+    print"Frame time: ", (endTime - startTime), "\r",
     if timeToWait < 0:
         print("late!", timeToWait)
         timeToWait = 0

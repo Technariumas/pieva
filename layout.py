@@ -2,9 +2,9 @@ import numpy as np
 from pieva import *
 from argparse import ArgumentParser
 
-DEFAULT_SPACING = 0.125  # m
+DEFAULT_SPACING = 0.027  # m
 spacing = DEFAULT_SPACING
-origin = {'x':-2 + 0.125/2, 'y':-2 + 0.125/2}
+origin = {'x':-2 + 0.115/2, 'y':-2 + 0.115/2}
 
 def toOPCLayout(pattern, startFrom):
     x = origin['x'] + startFrom['x'] * spacing
