@@ -19,7 +19,7 @@ class NoiseParams:
         self.persistence = persistence
         self.lacunarity = lacunarity
         
-mainNoiseParams = NoiseParams(32*4, 32*4, 5, 0.7, 2.0)
+mainNoiseParams = NoiseParams(32, 32, 22, 0.2, 2.0)
 
 class ColorPalette:
     palette = [
@@ -38,7 +38,7 @@ class ColorPalette:
        return np.array([r,g,b]).T
         
 
-startColor = [0, 128, 40]
+startColor = [0, 40, 10]
 endColor = [255, 255, 0]
 mainPalette = ColorPalette(startColor, endColor)
 
@@ -49,7 +49,7 @@ targetFrameTime = 1./targetFPS
 timeCounter = 0
 print("eina.. Control+C to stop")
 while True:
-    bitmap = NoiseGenerator.get2dNoise(mainNoiseParams.width, mainNoiseParams.height, timeCounter/20.0, mainNoiseParams.octaves, mainNoiseParams.persistence, mainNoiseParams.lacunarity, mainPalette.packed)
+    bitmap = NoiseGenerator.get2dNoise(mainNoiseParams.width, mainNoiseParams.height, timeCounter/64., mainNoiseParams.octaves, mainNoiseParams.persistence, mainNoiseParams.lacunarity, mainPalette.packed)
 #    biteleXX = NoiseGenerator.get2dNoise(1, 10, timeCounter/20., 7, 0.5, 2)
 #    biteleYY = NoiseGenerator.get2dNoise(1, 10, 2+timeCounter/20., 7, 0.5, 2)
     #print biteleXY

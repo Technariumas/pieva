@@ -2,6 +2,7 @@
 #include <inttypes.h>
 #include "noise.h"
 #include <stdio.h>
+#include<math.h>
 
 #define ALWAYS_INLINE __attribute__((always_inline))
 
@@ -25,8 +26,11 @@ inline static PyObject* ALWAYS_INLINE get2dNoise(GetNoiseArgs_t args){
     for(i = 0; i < args.width; i++) {
         PyObject *row = PyList_New(args.height);
         for(j = 0; j < args.height; j++) {
-            float v = fbm_noise3((float)i/args.width, (float)j/args.height, args.time, args.octaves, args.persistence, args.lacunarity);
-            uint8_t index = (int)(v * 127 + 128);
+            float v = fbm_noise3((float)i /args.width/8.0 + args.time, (float)j/args.height/8.0, args.time/10, 1, 0.5, 2.0);
+            float bg = fbm_noise3((float)i / args.width, (float)j/args.height + args.time/10, args.time/10, 5, 0.7, 2.0);
+            int16_t index = (int)(bg * 100 + 100) + (int)(v*55);
+            if(index < 0) index = 0;
+            if(index > 255) index = 255;
             uint8_t r = args.palette[index * 3];
             uint8_t g = args.palette[index * 3 + 1];
             uint8_t b = args.palette[index * 3 + 2];
