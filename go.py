@@ -7,15 +7,19 @@ import fastopc as opc
 from core import NoiseGenerator
 
 class NoiseParams:
+    width = 32
+    height = 32
     octaves = 1
     persistence = 0.5
     lacunarity = 2.0
-    def __init__(self, octaves, persistence, lacunarity):
+    def __init__(self, width, height, octaves, persistence, lacunarity):
+        self.width = width
+        self.height = height
         self.octaves = octaves
         self.persistence = persistence
         self.lacunarity = lacunarity
         
-mainNoiseParams = NoiseParams(5, 0.7, 2.0)
+mainNoiseParams = NoiseParams(32*4, 32*4, 5, 0.7, 2.0)
 
 class ColorPalette:
     palette = [
@@ -45,7 +49,7 @@ targetFrameTime = 1./targetFPS
 timeCounter = 0
 print("eina.. Control+C to stop")
 while True:
-    bitmap = NoiseGenerator.get2dNoise(32, 32, timeCounter/20.0, mainNoiseParams.octaves, mainNoiseParams.persistence, mainNoiseParams.lacunarity, mainPalette.packed)
+    bitmap = NoiseGenerator.get2dNoise(mainNoiseParams.width, mainNoiseParams.height, timeCounter/20.0, mainNoiseParams.octaves, mainNoiseParams.persistence, mainNoiseParams.lacunarity, mainPalette.packed)
 #    biteleXX = NoiseGenerator.get2dNoise(1, 10, timeCounter/20., 7, 0.5, 2)
 #    biteleYY = NoiseGenerator.get2dNoise(1, 10, 2+timeCounter/20., 7, 0.5, 2)
     #print biteleXY
