@@ -1,0 +1,22 @@
+Changelog
+=========
+
+1.1 (2013-10-19)
+----------------
+
+- Floats with negative exponents work again.
+
+- New tokenizer that is around 20 times faster.
+
+
+1.0 (2013-05-28)
+----------------
+
+- Solved issue #2: Paths with negative values and no spaces didn't work.
+  [regebro]
+
+
+1.0b1 (2013-02-03)
+------------------
+
+- Original release.
