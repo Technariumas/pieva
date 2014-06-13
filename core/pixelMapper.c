@@ -19,19 +19,40 @@ typedef struct {
 
 
 
-inline static void ALWAYS_INLINE map(MapArgs_t args, char *pixels) {
+float getNoise(uint8_t x, uint8_t y, float time, float wavelength, float xScrollSpeed, float yScrollSpeed, uint8_t octaves, float persistence, float lacunarity)
+{
+	return fbm_noise3((float)x / wavelength + xScrollSpeed, (float)y / wavelength + yScrollSpeed, time, octaves, persistence, lacunarity);
+}
+
+inline static void ALWAYS_INLINE render(MapArgs_t args, char *pixels) {
     while (args.pixelCount--) {
-        
-        
         uint8_t x = args.model[0];
         uint8_t y = args.model[1];
         args.model += 2;
 
-		float v = fbm_noise3((float)x /args.width/8.0 + args.time, (float)y/args.height/8.0, args.time, 1, 0.5, 2.0);
-		float bg = fbm_noise3((float)x / args.width * 8.5, (float)y/args.height + args.time *5, args.time, 5, 0.702, 2.0);
-		int16_t index = (int)(bg * 80 + 80) + (int)(v*95);
-		if(index < 0) index = 0;
-		if(index > 255) index = 255;
+		//float v = fbm_noise3((float)x /args.width/8.0 + args.time, (float)y/args.height/8.0, args.time, 1, 0.5, 2.0);
+		float sun = getNoise(x, y, args.time, args.width * 8.0, args.time, 0, 1, 0.5, 2.0);
+		//float bg = fbm_noise3((float)x / args.width * 8.5, (float)y/args.height * 8.5 + args.time *5, args.time, 5, 0.702, 2.0);
+		float grass = getNoise(x, y, args.time, args.width / 8, 0, args.time * 5, 5, 0.702, 2.0);
+		
+		uint8_t grassAmplitude = 80;
+		uint8_t grassOffset = 80;
+
+		uint8_t sunAmplitude = 95;
+		uint8_t sunOffset = 0;
+		
+		float noise = 0.0;
+		noise += (grass * grassAmplitude + grassOffset);
+		noise += (sun * sunAmplitude + sunOffset);
+		
+		int16_t index = (int) noise;
+		if(index < 0) {
+			index = 0;
+		}
+		if(index > 255) {
+			index = 255;
+		}
+		
 		uint8_t r = args.palette[index * 3];
 		uint8_t g = args.palette[index * 3 + 1];
 		uint8_t b = args.palette[index * 3 + 2];
@@ -71,7 +92,7 @@ static PyObject* py_map(PyObject* self, PyObject* args)
     result = PyBuffer_New(arguments.pixelCount * 3);
     if (result) {
         PyObject_AsWriteBuffer(result, (void**) &pixels, &tmp);
-        map(arguments, pixels);
+        render(arguments, pixels);
     }
 
     return result;
