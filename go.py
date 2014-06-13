@@ -7,19 +7,14 @@ import fastopc as opc
 from core import NoiseGenerator
 
 class NoiseParams:
-    width = 120
-    height = 120
     octaves = 1
     persistence = 0.5
     lacunarity = 2.0
-    def __init__(self, width, height, octaves, persistence, lacunarity):
-        self.width = width
-        self.height = height
+    def __init__(self, octaves, persistence, lacunarity):
         self.octaves = octaves
         self.persistence = persistence
         self.lacunarity = lacunarity
         
-mainNoiseParams = NoiseParams(140, 140, 5, 0.7, 2.0)
 
 class ColorPalette:
     palette = [
@@ -40,6 +35,10 @@ class ColorPalette:
 startColor = [0, 128, 20]
 endColor = [255, 255, 0]
 mainPalette = ColorPalette(startColor, endColor)
+mainNoiseParams = NoiseParams(5, 0.7, 2.0)
+
+width = 140
+height = 140
 
 screen = Screen(sections)#, ['127.0.0.1:7891'])
 
@@ -48,14 +47,14 @@ targetFrameTime = 1./targetFPS
 timeCounter = 0
 print("eina.. Control+C to stop")
 while True:
-    bitmap = NoiseGenerator.get2dNoise(mainNoiseParams.width, mainNoiseParams.height, timeCounter/64., mainNoiseParams.octaves, mainNoiseParams.persistence, mainNoiseParams.lacunarity, mainPalette.packed)
+    #bitmap = NoiseGenerator.get2dNoise(mainNoiseParams.width, mainNoiseParams.height, timeCounter/64., mainNoiseParams.octaves, mainNoiseParams.persistence, mainNoiseParams.lacunarity, mainPalette.packed)
 #    biteleXX = NoiseGenerator.get2dNoise(1, 10, timeCounter/20., 7, 0.5, 2)
 #    biteleYY = NoiseGenerator.get2dNoise(1, 10, 2+timeCounter/20., 7, 0.5, 2)
     #print biteleXY
     startTime = time.time()
 
 #    bitmap[int(biteleXX[0][9] / 255. * 15 + 16) - 7][int(biteleYY[0][9] / 255. * 15 + 16) -7] = 0x00FFFF00 
-    screen.send(bitmap)
+    screen.render(width, height, timeCounter/64., mainNoiseParams, mainPalette)
 
     endTime = time.time()
     timeToWait = targetFrameTime - (endTime - startTime)

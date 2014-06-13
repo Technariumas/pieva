@@ -45,6 +45,11 @@ class Screen():
         
     def send(self, bitmap):
         bitmapPacked = struct.pack('I'*len(bitmap)*len(bitmap[0]), *(j for i in bitmap for j in i)) 
-        tosend = core.PixelMapper.map(self.pixelMapPacked, bitmapPacked, len(bitmap[0]), len(bitmap))
+        tosend = core.PixelMapper.map(width, height, timeCounter, self.pixelMapPacked, bitmapPacked)
+        for out in self.opcServers:
+            out.putPixels(0, tosend)
+
+    def render(self, width, height, time, noise, palette):
+        tosend = core.PixelMapper.map(width, height, time, self.pixelMapPacked, palette.packed, noise.octaves, noise.persistence, noise.lacunarity)
         for out in self.opcServers:
             out.putPixels(0, tosend)
