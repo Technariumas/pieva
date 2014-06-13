@@ -5,23 +5,35 @@
 #define ALWAYS_INLINE __attribute__((always_inline))
 
 typedef struct {
+    unsigned int octaves;
+    float persistence;
+    float lacunarity;
+    float wavelength;
+    float xScrollSpeed;
+    float yScrollSpeed;
+    unsigned int amplitude;
+    unsigned int offset; 
+} Noise_t;
+
+typedef struct {
     const uint8_t *model;
     const uint16_t width;
     const uint16_t height; 
     const float time;
-    const uint8_t octaves;
-    const float persistence;
-    const float lacunarity;
     const uint8_t *palette;
     const uint16_t paletteLength;
     int pixelCount;
+    int noiseLayersCount;
+    Noise_t *noiseLayers;
 } MapArgs_t;
 
 
 
-float getNoise(uint8_t x, uint8_t y, float time, float wavelength, float xScrollSpeed, float yScrollSpeed, uint8_t octaves, float persistence, float lacunarity)
+
+
+float getNoise(uint8_t x, uint8_t y, float time, Noise_t noise)
 {
-	return fbm_noise3((float)x / wavelength + xScrollSpeed, (float)y / wavelength + yScrollSpeed, time, octaves, persistence, lacunarity);
+	return fbm_noise3((float)x / noise.wavelength + time * noise.xScrollSpeed, (float)y / noise.wavelength + time * noise.yScrollSpeed, time, noise.octaves, noise.persistence, noise.lacunarity) * noise.amplitude + noise.offset;
 }
 
 inline static void ALWAYS_INLINE render(MapArgs_t args, char *pixels) {
@@ -30,20 +42,11 @@ inline static void ALWAYS_INLINE render(MapArgs_t args, char *pixels) {
         uint8_t y = args.model[1];
         args.model += 2;
 
-		//float v = fbm_noise3((float)x /args.width/8.0 + args.time, (float)y/args.height/8.0, args.time, 1, 0.5, 2.0);
-		float sun = getNoise(x, y, args.time, args.width * 8.0, args.time, 0, 1, 0.5, 2.0);
-		//float bg = fbm_noise3((float)x / args.width * 8.5, (float)y/args.height * 8.5 + args.time *5, args.time, 5, 0.702, 2.0);
-		float grass = getNoise(x, y, args.time, args.width / 8, 0, args.time * 5, 5, 0.702, 2.0);
-		
-		uint8_t grassAmplitude = 80;
-		uint8_t grassOffset = 80;
-
-		uint8_t sunAmplitude = 95;
-		uint8_t sunOffset = 0;
-		
-		float noise = 0.0;
-		noise += (grass * grassAmplitude + grassOffset);
-		noise += (sun * sunAmplitude + sunOffset);
+		int i;
+		float noise = 0;
+		for(i = 0; i < args.noiseLayersCount; i++) {
+			noise += getNoise(x, y, args.time, args.noiseLayers[i]);
+		}
 		
 		int16_t index = (int) noise;
 		if(index < 0) {
@@ -71,23 +74,120 @@ static PyObject* py_map(PyObject* self, PyObject* args)
 
     char *pixels;
     PyObject *result = NULL;
+    PyObject *noiseLayersList;
     Py_ssize_t tmp;
 
-    if (!PyArg_ParseTuple(args, "iift#t#iff:map",
+    if (!PyArg_ParseTuple(args, "IIft#t#O:map",
         &arguments.width,
         &arguments.height,
         &arguments.time,
         &arguments.model, &modelBytes,
         &arguments.palette,
         &arguments.paletteLength,
-        &arguments.octaves,
-        &arguments.persistence,
-        &arguments.lacunarity
+        &noiseLayersList
         )) {
         return NULL;
     }
 
     arguments.pixelCount = modelBytes / 2;
+    
+    if (!PySequence_Check(noiseLayersList)) {
+        PyErr_SetString(PyExc_TypeError, "Noise layers list is not a sequence");
+        return NULL;
+    }    
+
+    arguments.noiseLayersCount = (int) PySequence_Length(noiseLayersList);
+    arguments.noiseLayers = PyMem_Malloc(arguments.noiseLayersCount * sizeof arguments.noiseLayers[0]);
+
+	int i;
+    for (i = 0; i < arguments.noiseLayersCount; ++i) {
+        PyObject *item = PySequence_GetItem(noiseLayersList, i);
+        
+        if(!PyObject_HasAttrString(item, "octaves")) {
+			printf("Noise object %d does not contain octaves\n", i);
+			return NULL;
+		}
+
+        if(!PyObject_HasAttrString(item, "persistence")) {
+			printf("Noise object %d does not contain persistence\n", i);
+			return NULL;
+		}
+
+        if(!PyObject_HasAttrString(item, "lacunarity")) {
+			printf("Noise object %d does not contain lacunarity\n", i);
+			return NULL;
+		}
+        
+        Noise_t *n = &arguments.noiseLayers[i];
+        
+        if (!PyArg_Parse(PyObject_GetAttrString(item, "octaves"), "I:map",
+			&n->octaves)){
+            Py_DECREF(item);
+            PyMem_Free(arguments.noiseLayers);
+			printf("Could not parse octaves for noise object %d\n", i);
+			return NULL;
+		}
+
+        if (!PyArg_Parse(PyObject_GetAttrString(item, "persistence"), "f:map",
+			&n->persistence)){
+            Py_DECREF(item);
+            PyMem_Free(arguments.noiseLayers);
+			printf("Could not parse persistence for noise object %d\n", i);
+			return NULL;
+		}
+
+        if (!PyArg_Parse(PyObject_GetAttrString(item, "lacunarity"), "f:map",
+			&n->lacunarity)){
+            Py_DECREF(item);
+            PyMem_Free(arguments.noiseLayers);
+			printf("Could not parse lacunarity for noise object %d\n", i);
+			return NULL;
+		}
+
+
+        if (!PyArg_Parse(PyObject_GetAttrString(item, "wavelength"), "f:map",
+			&n->wavelength)){
+            Py_DECREF(item);
+            PyMem_Free(arguments.noiseLayers);
+			printf("Could not parse wavelength for noise object %d\n", i);
+			return NULL;
+		}
+
+        if (!PyArg_Parse(PyObject_GetAttrString(item, "xScrollSpeed"), "f:map",
+			&n->xScrollSpeed)){
+            Py_DECREF(item);
+            PyMem_Free(arguments.noiseLayers);
+			printf("Could not parse xScrollSpeed for noise object %d\n", i);
+			return NULL;
+		}
+
+        if (!PyArg_Parse(PyObject_GetAttrString(item, "yScrollSpeed"), "f:map",
+			&n->yScrollSpeed)){
+            Py_DECREF(item);
+            PyMem_Free(arguments.noiseLayers);
+			printf("Could not parse yScrollSpeed for noise object %d\n", i);
+			return NULL;
+		}
+
+        if (!PyArg_Parse(PyObject_GetAttrString(item, "amplitude"), "I:map",
+			&n->amplitude)){
+            Py_DECREF(item);
+            PyMem_Free(arguments.noiseLayers);
+			printf("Could not parse yScrollSpeed for noise object %d\n", i);
+			return NULL;
+		}
+
+        if (!PyArg_Parse(PyObject_GetAttrString(item, "offset"), "I:map",
+			&n->offset)){
+            Py_DECREF(item);
+            PyMem_Free(arguments.noiseLayers);
+			printf("Could not parse offset for noise object %d\n", i);
+			return NULL;
+		}
+
+
+        Py_DECREF(item);
+    }
 
     result = PyBuffer_New(arguments.pixelCount * 3);
     if (result) {

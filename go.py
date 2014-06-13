@@ -4,16 +4,28 @@ from screen import Screen
 import numpy as np
 import time
 import fastopc as opc
+import random
 from core import NoiseGenerator
 
 class NoiseParams:
     octaves = 1
     persistence = 0.5
     lacunarity = 2.0
-    def __init__(self, octaves, persistence, lacunarity):
+    wavelength = 32
+    xScrollSpeed = 0
+    yScrollSpeed = 0
+    amplitude = 127
+    offset = 128 
+    
+    def __init__(self, octaves, persistence, lacunarity, wavelength, xScrollSpeed, yScrollSpeed, amplitude, offset):
         self.octaves = octaves
         self.persistence = persistence
         self.lacunarity = lacunarity
+        self.wavelength = wavelength
+        self.xScrollSpeed = xScrollSpeed
+        self.yScrollSpeed = yScrollSpeed
+        self.amplitude = amplitude
+        self.offset = offset
         
 
 class ColorPalette:
@@ -35,16 +47,36 @@ class ColorPalette:
 startColor = [0, 40, 5]
 endColor = [200, 255, 0]
 mainPalette = ColorPalette(startColor, endColor)
-mainNoiseParams = NoiseParams(5, 0.7, 2.0)
 
 width = 140
 height = 140
+
+sun = NoiseParams(
+	octaves = 1, 
+	persistence = 0.5, 
+	lacunarity = 2.0, 
+	wavelength = width * 8.0, 
+	xScrollSpeed = 1, 
+	yScrollSpeed = 0, 
+	amplitude = 95, 
+	offset = 1)
+	
+grass = NoiseParams(
+	octaves = 5, 
+	persistence = 0.702, 
+	lacunarity = 2.0, 
+	wavelength = width / 8, 
+	xScrollSpeed = 0, 
+	yScrollSpeed = 5, 
+	amplitude = 80, 
+	offset = 80)
+
 
 screen = Screen(sections)#, ['127.0.0.1:7891'])
 
 targetFPS = 24
 targetFrameTime = 1./targetFPS
-timeCounter = 0
+timeCounter = int(random.random() * 65535)
 print("eina.. Control+C to stop")
 while True:
     #bitmap = NoiseGenerator.get2dNoise(mainNoiseParams.width, mainNoiseParams.height, timeCounter/64., mainNoiseParams.octaves, mainNoiseParams.persistence, mainNoiseParams.lacunarity, mainPalette.packed)
@@ -54,11 +86,11 @@ while True:
     startTime = time.time()
 
 #    bitmap[int(biteleXX[0][9] / 255. * 15 + 16) - 7][int(biteleYY[0][9] / 255. * 15 + 16) -7] = 0x00FFFF00 
-    screen.render(width, height, timeCounter/640., mainNoiseParams, mainPalette)
+    screen.render(width, height, timeCounter/640., [grass, sun], mainPalette)
 
     endTime = time.time()
     timeToWait = targetFrameTime - (endTime - startTime)
-    print"Frame time: ", (endTime - startTime), "\r",
+    print"Frame time: ", (endTime - startTime)
     if timeToWait < 0:
         print("late!", timeToWait)
         timeToWait = 0
