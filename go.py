@@ -32,8 +32,8 @@ class ColorPalette:
        return np.array([r,g,b]).T
         
 
-startColor = [0, 128, 20]
-endColor = [255, 255, 0]
+startColor = [0, 40, 5]
+endColor = [200, 255, 0]
 mainPalette = ColorPalette(startColor, endColor)
 mainNoiseParams = NoiseParams(5, 0.7, 2.0)
 
@@ -54,7 +54,7 @@ while True:
     startTime = time.time()
 
 #    bitmap[int(biteleXX[0][9] / 255. * 15 + 16) - 7][int(biteleYY[0][9] / 255. * 15 + 16) -7] = 0x00FFFF00 
-    screen.render(width, height, timeCounter/64., mainNoiseParams, mainPalette)
+    screen.render(width, height, timeCounter/640., mainNoiseParams, mainPalette)
 
     endTime = time.time()
     timeToWait = targetFrameTime - (endTime - startTime)

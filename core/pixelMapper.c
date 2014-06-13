@@ -27,9 +27,9 @@ inline static void ALWAYS_INLINE map(MapArgs_t args, char *pixels) {
         uint8_t y = args.model[1];
         args.model += 2;
 
-		float v = fbm_noise3((float)x /args.width/8.0 + args.time, (float)y/args.height/8.0, args.time/10, 1, 0.5, 2.0);
-		float bg = fbm_noise3((float)x / args.width, (float)y/args.height + args.time/10, args.time/10, 5, 0.7, 2.0);
-		int16_t index = (int)(bg * 100 + 100) + (int)(v*55);
+		float v = fbm_noise3((float)x /args.width/8.0 + args.time, (float)y/args.height/8.0, args.time, 1, 0.5, 2.0);
+		float bg = fbm_noise3((float)x / args.width * 8.5, (float)y/args.height + args.time *5, args.time, 5, 0.702, 2.0);
+		int16_t index = (int)(bg * 80 + 80) + (int)(v*95);
 		if(index < 0) index = 0;
 		if(index > 255) index = 255;
 		uint8_t r = args.palette[index * 3];
