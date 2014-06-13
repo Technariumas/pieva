@@ -6,6 +6,8 @@
 typedef struct {
     const uint8_t *model;
     const uint32_t *bitmap;
+    const uint16_t width;
+    const uint16_t height; 
     int pixelCount;
 } MapArgs_t;
 
@@ -17,9 +19,9 @@ inline static void ALWAYS_INLINE map(MapArgs_t args, char *pixels) {
         y = args.model[1];
         args.model += 2;
 
-        r = (args.bitmap[x + y * 32] >> 16) & 0x000000FF;
-        g = (args.bitmap[x + y * 32] >> 8) & 0x000000FF;
-        b = args.bitmap[x + y * 32] & 0x000000FF;
+        r = (args.bitmap[x + y * args.height] >> 16) & 0x000000FF;
+        g = (args.bitmap[x + y * args.height] >> 8) & 0x000000FF;
+        b = args.bitmap[x + y * args.height] & 0x000000FF;
         
         pixels[0] = r;
         pixels[1] = g;
@@ -39,9 +41,11 @@ static PyObject* py_map(PyObject* self, PyObject* args)
     PyObject *result = NULL;
     Py_ssize_t tmp;
 
-    if (!PyArg_ParseTuple(args, "t#s#:map",
+    if (!PyArg_ParseTuple(args, "t#s#ii:map",
         &arguments.model, &modelBytes,
-        &arguments.bitmap,  &bitmapBytes
+        &arguments.bitmap,  &bitmapBytes,
+        &arguments.width,
+        &arguments.height
         )) {
         return NULL;
     }

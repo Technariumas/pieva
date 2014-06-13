@@ -1,7 +1,9 @@
+#!/usr/bin/python
 from argparse import ArgumentParser
 from pieva import *
 import fastopc as opc
 import time
+from screen import *
 
 leds = opc.FastOPC()
 
@@ -46,6 +48,7 @@ def test(testSectionIdx):
 parser = ArgumentParser(description = "Play test sequences")
 parser.add_argument("testSection", type=int, action="store", default=None, nargs="?", help=" - which section to test. All sections will be tested if omitted")
 parser.add_argument("--server", action="store", default=None, help="additional OPC server for debug purposes")
+parser.add_argument("--X", action="store", default=None, help="additional OPC server for debug purposes")
 cliargs = parser.parse_args()
 
 testDotIndex = 0
@@ -67,6 +70,18 @@ else:
 print "Control-C to interrupt"
 
 #~ print testPattern(sections[0]['pattern'])
+
+if None != cliargs.X:
+    bitmap = np.zeros([160,160])
+    for x in range(40):
+        for y in range(40):
+            bitmap[x][y]=0x00ffffff
+        #bitmap[116-x][x]=0x00ffffff
+    screen = Screen(sections)
+    screen.send(bitmap)
+    time.sleep(0.1)
+    print "done"
+    exit(0)
 
 while True:
     test(currSection)

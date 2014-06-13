@@ -22,7 +22,9 @@ class Screen():
         for section in ledStrandModel:
             self.pixelMap += self.createMapFor(section)
         self.pixelMapPacked = np.array(self.pixelMap).astype(np.int8).tostring()
-
+        
+        print min(np.array(self.pixelMap).T[0]), " - ", max(np.array(self.pixelMap).T[0])
+        print min(np.array(self.pixelMap).T[1]), " - ", max(np.array(self.pixelMap).T[1])
         self.opcServers.append(opc.FastOPC())
         if None != auxscreens:
             for aux in auxscreens:
@@ -32,6 +34,9 @@ class Screen():
         pixmap = []
         x = section['startX']
         y = section['startY']
+        if x < 0 or y < 0:
+            print "Map pointing to negative pixels!"
+            exit(1)
         for led in section['pattern']:
             x = x + led['xstep']
             y = y + led['ystep']
@@ -40,8 +45,6 @@ class Screen():
         
     def send(self, bitmap):
         bitmapPacked = struct.pack('I'*len(bitmap)*len(bitmap[0]), *(j for i in bitmap for j in i)) 
-
-        tosend = core.PixelMapper.map(self.pixelMapPacked, bitmapPacked)
-
+        tosend = core.PixelMapper.map(self.pixelMapPacked, bitmapPacked, len(bitmap[0]), len(bitmap))
         for out in self.opcServers:
             out.putPixels(0, tosend)

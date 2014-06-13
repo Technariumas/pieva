@@ -5,25 +5,33 @@ ko reikia pievai
  - Miniusb laidas Fadecandy x 2
  - Dėžučių su UTP lizdu x 20
  - UTP kabelio 30m?
+ - UTP galų 50vnt
  - USB hubą maitinamą
+ - rozetę ant laido hubui maitinti?
 x - !!!Sprendimo, kaip vedžiosim signalų laidus
 x - !!!Kaip sujunginėsim signalų laidus?
  - Buferių?
  - !!!Sprendimo, kaip vedžiosim maitinimo laidus
  - Kaip sujunginėsim maitinimo laidus?
  - kabel kabel sujungimo ledų maitinimui: ausų, 1,5mm laido ir kažkokių sujungimų
+ - nusekliai į laidą dedamų saugiklių ir korpusų jiems ant 240V 200mA
+ - nuosekliai į laidą dedamų saugiklių ir korpusų jiems ant 5V 4A
 x - Softo, kuris transliuotų į FC
 x - susitvarkyt kodą
 x - noizo skaitymas iš failo
 - susitvarkyt kodą vėl
-- paletė
+x - paletė
 x - pasikartojantis 3d noizas
 - web controll panel
 - PievaControl interfeisas, per kurį valdoma iš lauko
 - DHCP į raspi
 - raspi wifi access point
 x - Transliavimo softą į raspi
- - raspi fcserver autostart
- - raspi pievastreamer autostart
+x - raspi fcserver autostart
+x - raspi pievastreamer autostart
+ - raspi ventiliatorius?
+ - git serverį ant veikia
+x - padaryt pievos mappingą su zigzagais
+ - padaryt pievos mappingą su iškirptu viduriu
 
 ooooi!
