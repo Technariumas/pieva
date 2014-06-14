@@ -50,12 +50,13 @@ class ColorPalette:
        return np.array([r,g,b]).T
 
     def createSNSPalette(self, paletteParams):
-	pal = sns.blend_palette(paletteParams)
-        cm = mpl.colors.ListedColormap(list(pal))
-        r = cm((np.arange(256)))
-        r = 255.999*r[:, 0:3]
-        print r
-        return r
+		pal = sns.blend_palette(paletteParams, 256)
+		cm = mpl.colors.ListedColormap(list(pal))
+		r = cm((np.arange(256)))
+		r = 256*r[:, 0:3]
+		print r
+		exit()
+		return r
 
 startColor = [0, 40, 5]
 endColor = [200, 255, 0]
