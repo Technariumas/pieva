@@ -5,6 +5,8 @@ import numpy as np
 import time
 import fastopc as opc
 from core import NoiseGenerator
+from create_palette import *
+
 
 class NoiseParams:
     width = 120
@@ -34,6 +36,7 @@ class ColorPalette:
        r = np.linspace(startColor[0], endColor[0], 256) 
        g = np.linspace(startColor[1], endColor[1], 256) 
        b = np.linspace(startColor[2], endColor[2], 256)
+       print np.array([r,g,b]).T
        return np.array([r,g,b]).T
         
 
