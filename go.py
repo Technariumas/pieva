@@ -36,7 +36,7 @@ class ColorPalette:
         if startColor != None and endColor != None:
             self.palette = self.generatePalette(startColor, endColor)
         elif filename != None:
-			self.palette = self.readSNSPalette(filename)	
+            self.palette = self.readSNSPalette(filename)    
 
         self.packed = np.array(self.palette).astype(np.int8).tostring()
 
@@ -48,35 +48,34 @@ class ColorPalette:
        return np.array([r,g,b]).T
 
     def readSNSPalette(self, filename):
-		r = np.genfromtxt(filename, delimiter=',')
-		print r, r.shape
-		return r
+        r = np.genfromtxt(filename, delimiter=',')
+        print r, r.shape
+        return r
 
-startColor = [0, 40, 5]
-endColor = [200, 255, 0]
 paletteFilename="palettes/pink"
+
 width = 140
 height = 140
 
 sun = NoiseParams(
-	octaves = 1, 
-	persistence = 0.5, 
-	lacunarity = 2.0, 
-	wavelength = width * 8.0, 
-	xScrollSpeed = 1, 
-	yScrollSpeed = 0, 
-	amplitude = 95, 
-	offset = 1)
+    octaves = 1, 
+    persistence = 0.5, 
+    lacunarity = 2.0, 
+    wavelength = width * 8.0, 
+    xScrollSpeed = 1, 
+    yScrollSpeed = 0, 
+    amplitude = 95, 
+    offset = 1)
 
 grass = NoiseParams(
-	octaves = 5, 
-	persistence = 0.702, 
-	lacunarity = 2.0, 
-	wavelength = width / 8, 
-	xScrollSpeed = 0, 
-	yScrollSpeed = 5, 
-	amplitude = 80, 
-	offset = 80)
+    octaves = 5, 
+    persistence = 0.702, 
+    lacunarity = 2.0, 
+    wavelength = width / 8, 
+    xScrollSpeed = 0, 
+    yScrollSpeed = 5, 
+    amplitude = 80, 
+    offset = 80)
 
 mainPalette = ColorPalette(filename=paletteFilename)
 
@@ -87,18 +86,11 @@ targetFrameTime = 1./targetFPS
 timeCounter = int(random.random() * 65535)
 print("eina.. Control+C to stop")
 while True:
-    #bitmap = NoiseGenerator.get2dNoise(mainNoiseParams.width, mainNoiseParams.height, timeCounter/64., mainNoiseParams.octaves, mainNoiseParams.persistence, mainNoiseParams.lacunarity, mainPalette.packed)
-#    biteleXX = NoiseGenerator.get2dNoise(1, 10, timeCounter/20., 7, 0.5, 2)
-#    biteleYY = NoiseGenerator.get2dNoise(1, 10, 2+timeCounter/20., 7, 0.5, 2)
-    #print biteleXY
     startTime = time.time()
-
-#    bitmap[int(biteleXX[0][9] / 255. * 15 + 16) - 7][int(biteleYY[0][9] / 255. * 15 + 16) -7] = 0x00FFFF00 
     screen.render(width, height, timeCounter/640., [grass, sun], mainPalette)
-
     endTime = time.time()
     timeToWait = targetFrameTime - (endTime - startTime)
-    print"Frame time: ", (endTime - startTime)
+#    print"Frame time: ", (endTime - startTime)
     if timeToWait < 0:
         print("late!", timeToWait)
         timeToWait = 0
