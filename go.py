@@ -49,7 +49,6 @@ class ColorPalette:
 
     def readSNSPalette(self, filename):
         r = np.genfromtxt(filename, delimiter=',')
-        print r, r.shape
         return r
 
 paletteFilename="palettes/pink"
