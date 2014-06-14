@@ -1,8 +1,8 @@
 ko reikia pievai
 
- - Raspberry pi maitinimas
- - Microusb laidas maitinimui
- - Miniusb laidas Fadecandy x 2
+x - Raspberry pi maitinimas
+X - Microusb laidas maitinimui
+ - Miniusb laidas Fadecandy x 3
  - Dėžučių su UTP lizdu x 20
  - UTP kabelio 30m?
  - UTP galų 50vnt
@@ -11,10 +11,10 @@ ko reikia pievai
 x - !!!Sprendimo, kaip vedžiosim signalų laidus
 x - !!!Kaip sujunginėsim signalų laidus?
  - Buferių?
- - !!!Sprendimo, kaip vedžiosim maitinimo laidus
- - Kaip sujunginėsim maitinimo laidus?
+x - !!!Sprendimo, kaip vedžiosim maitinimo laidus
+x - Kaip sujunginėsim maitinimo laidus?
  - kabel kabel sujungimo ledų maitinimui: ausų, 1,5mm laido ir kažkokių sujungimų
- - nusekliai į laidą dedamų saugiklių ir korpusų jiems ant 240V 200mA
+x - nusekliai į laidą dedamų saugiklių ir korpusų jiems ant 240V 200mA
  - nuosekliai į laidą dedamų saugiklių ir korpusų jiems ant 5V 4A
 x - Softo, kuris transliuotų į FC
 x - susitvarkyt kodą
@@ -30,7 +30,7 @@ x - Transliavimo softą į raspi
 x - raspi fcserver autostart
 x - raspi pievastreamer autostart
  - raspi ventiliatorius?
- - git serverį ant veikia
+x - git serverį ant veikia
 x - padaryt pievos mappingą su zigzagais
  - padaryt pievos mappingą su iškirptu viduriu
 
