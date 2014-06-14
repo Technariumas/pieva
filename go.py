@@ -54,7 +54,7 @@ class ColorPalette:
 
 startColor = [0, 40, 5]
 endColor = [200, 255, 0]
-paletteFilename="palettes/husl"
+paletteFilename="palettes/pink"
 width = 140
 height = 140
 
