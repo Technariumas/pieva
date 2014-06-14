@@ -6,8 +6,6 @@ import time
 import fastopc as opc
 import random
 from core import NoiseGenerator
-import seaborn as sns
-import matplotlib as mpl
 
 class NoiseParams:
     octaves = 1
@@ -34,11 +32,11 @@ class ColorPalette:
     palette = [
     ]
 
-    def __init__(self, startColor = None, endColor = None, paletteParams=None):
+    def __init__(self, startColor = None, endColor = None, filename=None):
         if startColor != None and endColor != None:
             self.palette = self.generatePalette(startColor, endColor)
-        elif paletteParams != None:
-			self.palette = self.createSNSPalette(paletteParams)	
+        elif filename != None:
+			self.palette = self.readSNSPalette(filename)	
 
         self.packed = np.array(self.palette).astype(np.int8).tostring()
 
@@ -49,17 +47,14 @@ class ColorPalette:
        print np.array([r,g,b]).T
        return np.array([r,g,b]).T
 
-    def createSNSPalette(self, paletteParams):
-		pal = sns.blend_palette(paletteParams, 256)
-		cm = mpl.colors.ListedColormap(list(pal))
-		r = cm((np.arange(256)))
-		r = 256*r[:, 0:3]
-		print r
+    def readSNSPalette(self, filename):
+		r = np.genfromtxt(filename,delimiter=',')
+		print r, r.shape
 		return r
 
 startColor = [0, 40, 5]
 endColor = [200, 255, 0]
-#mainPalette = ColorPalette(startColor, endColor)
+paletteFilename="palettes/pink"
 width = 140
 height = 140
 
@@ -83,7 +78,8 @@ grass = NoiseParams(
 	amplitude = 80, 
 	offset = 80)
 
-mainPalette = ColorPalette(paletteParams=["mediumseagreen", "ghostwhite", "#4168B7"])
+mainPalette = ColorPalette(filename=paletteFilename)
+
 screen = Screen(sections)#, ['127.0.0.1:7891'])
 
 targetFPS = 24

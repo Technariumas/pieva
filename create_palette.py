@@ -6,13 +6,12 @@ import numpy as np
 import seaborn as sns
 import matplotlib as mpl
 
+def get_palette(paletteFilename):
+		pal = sns.color_palette("RdPu_r", 258)
+		#pal = sns.blend_palette(paletteParams, 256)
+		cm = mpl.colors.ListedColormap(list(pal))
+		r = cm((np.arange(256)))
+		r = 255.999*r[:, 0:3]
+		np.savetxt(paletteFilename, r, delimiter=",")
 
-def make_palette_array(pal):
-    cm = mpl.colors.ListedColormap(list(pal))
-    r = cm((np.arange(256)))
-    r = 255.999*r[:, 0:3]
-    return r.astype(np.uint8)	
-
-def get_palette():
-	pal = sns.color_palette("RdPu_r", 256)
-	return make_palette_array(pal)
+get_palette("palettes/pink")
