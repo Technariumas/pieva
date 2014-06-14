@@ -6,8 +6,8 @@ import time
 import fastopc as opc
 import random
 from core import NoiseGenerator
-from create_palette import *
-
+import seaborn as sns
+import matplotlib as mpl
 
 class NoiseParams:
     octaves = 1
@@ -34,9 +34,12 @@ class ColorPalette:
     palette = [
     ]
 
-    def __init__(self, startColor = None, endColor = None):
+    def __init__(self, startColor = None, endColor = None, paletteParams=None):
         if startColor != None and endColor != None:
             self.palette = self.generatePalette(startColor, endColor)
+        elif paletteParams != None:
+			self.palette = self.createSNSPalette(paletteParams)	
+
         self.packed = np.array(self.palette).astype(np.int8).tostring()
 
     def generatePalette(self, startColor, endColor):
@@ -45,9 +48,16 @@ class ColorPalette:
        b = np.linspace(startColor[2], endColor[2], 256)
        print np.array([r,g,b]).T
        return np.array([r,g,b]).T
-        
 
-mainPalette = get_palette()
+	def createSNSPalette(paletteParams)			
+		pal = sns.blend_palette(paletteParams)
+		cm = mpl.colors.ListedColormap(list(pal))
+		r = cm((np.arange(256)))
+		r = 255.999*r[:, 0:3]
+		print r
+		return r
+
+mainPalette = ColorPalette(paletteParams=["mediumseagreen", "ghostwhite", "#4168B7"])
 screen = Screen(sections)#, ['127.0.0.1:7891'])
 
 targetFPS = 24
