@@ -42,8 +42,8 @@ class ColorPalette:
 
 startColor = [0, 128, 20]
 endColor = [255, 255, 0]
-mainPalette = ColorPalette(startColor, endColor)
-
+#mainPalette = ColorPalette(startColor, endColor)
+mainPalette = get_palette()
 screen = Screen(sections)#, ['127.0.0.1:7891'])
 
 targetFPS = 24
