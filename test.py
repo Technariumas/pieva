@@ -48,7 +48,9 @@ def test(testSectionIdx):
 parser = ArgumentParser(description = "Play test sequences")
 parser.add_argument("testSection", type=int, action="store", default=None, nargs="?", help=" - which section to test. All sections will be tested if omitted")
 parser.add_argument("--server", action="store", default=None, help="additional OPC server for debug purposes")
-parser.add_argument("--X", action="store", default=None, help="additional OPC server for debug purposes")
+parser.add_argument("--X", action="store", default=None, help="Fill one corner of the screen")
+parser.add_argument("--palette", action="store", default=None, type=open, help="Cycle a palette")
+
 cliargs = parser.parse_args()
 
 testDotIndex = 0
@@ -72,7 +74,7 @@ print "Control-C to interrupt"
 #~ print testPattern(sections[0]['pattern'])
 
 if None != cliargs.X:
-    bitmap = np.zeros([160,160])
+    bitmap = np.zeros([140,140])
     for x in range(40):
         for y in range(40):
             bitmap[x][y]=0x00ffffff
@@ -82,6 +84,24 @@ if None != cliargs.X:
     time.sleep(0.1)
     print "done"
     exit(0)
+
+if None != cliargs.palette:
+    from palette import ColorPalette
+    screen = Screen(sections)
+    palette = ColorPalette(CSVfilename=cliargs.palette)
+    i = 0
+    while True:
+        startTime = time.time()
+        bitmap = np.ones([140,140]) * palette.get32bitColor(i)
+        screen.send(bitmap)
+        endTime = time.time()
+        i += 1;
+        if i > 255:
+            i = 0
+        timeToWait = 1/24. - (endTime - startTime)
+        time.sleep(timeToWait)
+    
+
 
 while True:
     test(currSection)

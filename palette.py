@@ -10,7 +10,6 @@ class ColorPalette:
             self.palette = self.generatePalette(startColor, endColor)
         elif CSVfilename != None:
             self.palette = self.readCSVPalette(CSVfilename)    
-
         self.packed = np.array(self.palette).astype(np.int8).tostring()
 
     def generatePalette(self, startColor, endColor):
@@ -22,5 +21,8 @@ class ColorPalette:
 
     def readCSVPalette(self, SNSfilename):
         r = np.genfromtxt(SNSfilename, delimiter=',')
-        return r
+        return r.astype(np.int16)
+    
+    def get32bitColor(self, index):
+        return self.palette[index][0] << 16 | self.palette[index][1] << 8 | self.palette[index][2]
 
