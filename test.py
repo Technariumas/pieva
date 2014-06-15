@@ -89,16 +89,20 @@ if None != cliargs.palette:
     from palette import ColorPalette
     screen = Screen(sections)
     palette = ColorPalette(CSVfilename=cliargs.palette)
+    bitmap = np.zeros([140, 140])
     i = 0
     while True:
+        bitmap[:] = palette.get32bitColor(i)
         startTime = time.time()
-        bitmap = np.ones([140,140]) * palette.get32bitColor(i)
         screen.send(bitmap)
         endTime = time.time()
         i += 1;
         if i > 255:
             i = 0
+	print (endTime - startTime)
         timeToWait = 1/24. - (endTime - startTime)
+	if timeToWait < 0:
+		timeToWait = 0
         time.sleep(timeToWait)
     
 
