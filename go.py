@@ -48,13 +48,13 @@ class ColorPalette:
        return np.array([r,g,b]).T
 
     def readSNSPalette(self, filename):
-		r = np.genfromtxt(filename,delimiter=',')
+		r = np.genfromtxt(filename, delimiter=',')
 		print r, r.shape
 		return r
 
 startColor = [0, 40, 5]
 endColor = [200, 255, 0]
-paletteFilename="palettes/pink"
+paletteFilename="palettes/husl"
 width = 140
 height = 140
 
