@@ -51,7 +51,7 @@ class ColorPalette:
         r = np.genfromtxt(filename, delimiter=',')
         return r
 
-paletteFilename="palettes/pink"
+paletteFilename="/home/mic/pieva/palettes/pink"
 
 width = 140
 height = 140
