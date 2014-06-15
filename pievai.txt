@@ -24,7 +24,7 @@ x - paletė
 x - pasikartojantis 3d noizas
 - web controll panel
 - PievaControl interfeisas, per kurį valdoma iš lauko
-- DHCP į raspi
+x - DHCP į raspi
 - raspi wifi access point
 x - Transliavimo softą į raspi
 x - raspi fcserver autostart
