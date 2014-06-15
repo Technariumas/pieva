@@ -57,6 +57,24 @@ mainPalette = ColorPalette(CSVfilename=paletteFileCSV)
 
 screen = Screen(sections)#, ['127.0.0.1:7891'])
 
+from bottle import route, run, template
+from threading import Thread
+
+@route('/color/<r>/<g>/<b>')
+def index(r, g, b):
+    r = int(r)
+    g = int(g)
+    b = int(b)
+    print " !!!!!!!!!!! ", r, g, b
+    mainPalette.regenerate([r,g,b], [g,r,b]);
+    return template('ok')
+
+server = Thread(target = run)
+server.setDaemon(True)
+server.start()
+
+time.sleep(1)
+
 targetFPS = 24
 targetFrameTime = 1./targetFPS
 timeCounter = 0#int(random.random() * 65535)
