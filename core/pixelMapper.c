@@ -25,18 +25,41 @@ typedef struct {
     int pixelCount;
     int noiseLayersCount;
     Noise_t *noiseLayers;
+} RenderArgs_t;
+
+typedef struct {
+    const uint8_t *model;
+    const uint32_t *bitmap;
+    const uint16_t width;
+    const uint16_t height;
+    int pixelCount;
 } MapArgs_t;
 
+inline static void ALWAYS_INLINE map(MapArgs_t args, char *pixels) {
+    while (args.pixelCount--) {
+        unsigned char x, y, r, g, b;
+        
+        x = args.model[0];
+        y = args.model[1];
+        args.model += 2;
 
-
-
+        r = (args.bitmap[x + y * args.height] >> 16) & 0x000000FF;
+        g = (args.bitmap[x + y * args.height] >> 8) & 0x000000FF;
+        b = args.bitmap[x + y * args.height] & 0x000000FF;
+        
+        pixels[0] = r;
+        pixels[1] = g;
+        pixels[2] = b;
+        pixels += 3;
+    }
+}
 
 float getNoise(uint8_t x, uint8_t y, float time, Noise_t noise)
 {
 	return fbm_noise3((float)x / noise.wavelength + time * noise.xScrollSpeed, (float)y / noise.wavelength + time * noise.yScrollSpeed, time, noise.octaves, noise.persistence, noise.lacunarity) * noise.amplitude + noise.offset;
 }
 
-inline static void ALWAYS_INLINE render(MapArgs_t args, char *pixels) {
+inline static void ALWAYS_INLINE render(RenderArgs_t args, char *pixels) {
     while (args.pixelCount--) {
         uint8_t x = args.model[0];
         uint8_t y = args.model[1];
@@ -70,6 +93,35 @@ inline static void ALWAYS_INLINE render(MapArgs_t args, char *pixels) {
 static PyObject* py_map(PyObject* self, PyObject* args)
 {
     MapArgs_t arguments;
+    int modelBytes, bitmapBytes;
+
+    char *pixels;
+    PyObject *result = NULL;
+    Py_ssize_t tmp;
+
+    if (!PyArg_ParseTuple(args, "t#s#ii:map",
+        &arguments.model, &modelBytes,
+        &arguments.bitmap, &bitmapBytes,
+        &arguments.width,
+        &arguments.height
+        )) {
+        return NULL;
+    }
+
+    arguments.pixelCount = modelBytes / 2;
+
+    result = PyBuffer_New(arguments.pixelCount * 3);
+    if (result) {
+        PyObject_AsWriteBuffer(result, (void**) &pixels, &tmp);
+        map(arguments, pixels);
+    }
+
+    return result;
+}
+
+static PyObject* py_render(PyObject* self, PyObject* args)
+{
+    RenderArgs_t arguments;
     int modelBytes;
 
     char *pixels;
@@ -199,8 +251,13 @@ static PyObject* py_map(PyObject* self, PyObject* args)
 }
 
 static PyMethodDef native_functions[] = {
-    { "map", (PyCFunction)py_map, METH_VARARGS,
+    { "render", (PyCFunction)py_render, METH_VARARGS,
         "render(model, bitmap) -- return rendered RGB pixels, as a string\n\n"
+        "model -- (x,y) coordinates for each LED, represented as a string of packed 8-bit ints\n"
+        "bitmap -- bitmap pixels, 32-bit each, represented as a string of packed 32-bit ints"
+    },
+    { "map", (PyCFunction)py_map, METH_VARARGS,
+        "map(model, bitmap) -- return rendered RGB pixels, as a string\n\n"
         "model -- (x,y) coordinates for each LED, represented as a string of packed 8-bit ints\n"
         "bitmap -- bitmap pixels, 32-bit each, represented as a string of packed 32-bit ints"
     },
