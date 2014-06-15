@@ -53,7 +53,7 @@ class ColorPalette:
         
         
 
-CSVfilename="palettes/rainbow"
+CSVfilename="palettes/green_grass"
 
 width = 140
 height = 140
