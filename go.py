@@ -70,12 +70,11 @@ def index(r, g, b):
     return template('ok')
 
 def runBottle():
-    run(host="ieva.local", port='80')
+    run(host="veikia", port='80')
+    
 server = Thread(target = runBottle)
 server.setDaemon(True)
 server.start()
-
-time.sleep(1)
 
 targetFPS = 24
 targetFrameTime = 1./targetFPS
