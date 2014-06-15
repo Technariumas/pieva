@@ -70,8 +70,8 @@ def index(r, g, b):
     return template('ok')
 
 def runBottle():
-    run(host="veikia", port='80')
-    
+    run(host="192.168.0.12", port='80')
+
 server = Thread(target = runBottle)
 server.setDaemon(True)
 server.start()
