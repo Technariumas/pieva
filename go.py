@@ -28,7 +28,7 @@ class NoiseParams:
         self.amplitude = amplitude
         self.offset = offset
         
-CSVfilename="palettes/green_grass"
+paletteFileCSV="palettes/green_grass"
 
 width = 140
 height = 140
@@ -41,17 +41,17 @@ sun = NoiseParams(
     xScrollSpeed = 1, 
     yScrollSpeed = 0, 
     amplitude = 95, 
-    offset = 1)
+    offset = 140)
 
 grass = NoiseParams(
-    octaves = 5, 
+    octaves = 4, 
     persistence = 0.702, 
     lacunarity = 2.0, 
     wavelength = width / 8, 
     xScrollSpeed = 0, 
     yScrollSpeed = 5, 
-    amplitude = 80, 
-    offset = 80)
+    amplitude = 120, 
+    offset = 120)
 
 mainPalette = ColorPalette(CSVfilename=paletteFileCSV)
 
@@ -59,7 +59,7 @@ screen = Screen(sections)#, ['127.0.0.1:7891'])
 
 targetFPS = 24
 targetFrameTime = 1./targetFPS
-timeCounter = int(random.random() * 65535)
+timeCounter = 0#int(random.random() * 65535)
 print("eina.. Control+C to stop")
 while True:
     startTime = time.time()
