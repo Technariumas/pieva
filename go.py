@@ -32,11 +32,11 @@ class ColorPalette:
     palette = [
     ]
 
-    def __init__(self, startColor = None, endColor = None, filename=None):
+    def __init__(self, startColor = None, endColor = None, CSVfilename=None):
         if startColor != None and endColor != None:
             self.palette = self.generatePalette(startColor, endColor)
-        elif filename != None:
-            self.palette = self.readSNSPalette(filename)    
+        elif CSVfilename != None:
+            self.palette = self.readCSVPalette(CSVfilename)    
 
         self.packed = np.array(self.palette).astype(np.int8).tostring()
 
@@ -47,11 +47,13 @@ class ColorPalette:
        print np.array([r,g,b]).T
        return np.array([r,g,b]).T
 
-    def readSNSPalette(self, filename):
-        r = np.genfromtxt(filename, delimiter=',')
+    def readCSVPalette(self, SNSfilename):
+        r = np.genfromtxt(SNSfilename, delimiter=',')
         return r
+        
+        
 
-paletteFilename="palettes/pink"
+CSVfilename="palettes/rainbow"
 
 width = 140
 height = 140
@@ -76,7 +78,7 @@ grass = NoiseParams(
     amplitude = 80, 
     offset = 80)
 
-mainPalette = ColorPalette(filename=paletteFilename)
+mainPalette = ColorPalette(CSVfilename=CSVfilename)
 
 screen = Screen(sections)#, ['127.0.0.1:7891'])
 
