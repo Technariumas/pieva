@@ -50,6 +50,7 @@ parser.add_argument("testSection", type=int, action="store", default=None, nargs
 parser.add_argument("--server", action="store", default=None, help="additional OPC server for debug purposes")
 parser.add_argument("--X", action="store", default=None, help="Fill one corner of the screen")
 parser.add_argument("--palette", action="store", default=None, type=open, help="Cycle a palette")
+parser.add_argument("--image", action="store", default=None, help="additional OPC server for debug purposes")
 
 cliargs = parser.parse_args()
 
@@ -105,7 +106,22 @@ if None != cliargs.palette:
 		timeToWait = 0
         time.sleep(timeToWait)
     
+if None != cliargs.image:
+    import matplotlib.image as mpimg
+    img = mpimg.imread(cliargs.image)
 
+    if img.dtype == np.uint8 and img.shape[2] == 3:
+        img = img.astype(np.uint32)
+    elif img.dtype == np.float32:
+        img = (img * 255).astype(np.uint32)
+
+    bitmap = img[:,:,0] << 16 | img[:,:,1] << 8 | img[:,:,2]
+
+    print bitmap, bitmap.shape
+    print "Sending", len(bitmap[0]), "X", len(bitmap), "bitmap", cliargs.image
+    screen = Screen(sections)
+    screen.send(bitmap)
+    exit(0)
 
 while True:
     test(currSection)
