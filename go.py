@@ -6,6 +6,8 @@ import time
 import fastopc as opc
 import random
 from core import NoiseGenerator
+from create_palette import *
+
 
 class NoiseParams:
     octaves = 1
@@ -41,37 +43,11 @@ class ColorPalette:
        r = np.linspace(startColor[0], endColor[0], 256) 
        g = np.linspace(startColor[1], endColor[1], 256) 
        b = np.linspace(startColor[2], endColor[2], 256)
+       print np.array([r,g,b]).T
        return np.array([r,g,b]).T
         
 
-startColor = [0, 40, 5]
-endColor = [200, 255, 0]
-mainPalette = ColorPalette(startColor, endColor)
-
-width = 140
-height = 140
-
-sun = NoiseParams(
-	octaves = 1, 
-	persistence = 0.5, 
-	lacunarity = 2.0, 
-	wavelength = width * 8.0, 
-	xScrollSpeed = 1, 
-	yScrollSpeed = 0, 
-	amplitude = 95, 
-	offset = 1)
-	
-grass = NoiseParams(
-	octaves = 5, 
-	persistence = 0.702, 
-	lacunarity = 2.0, 
-	wavelength = width / 8, 
-	xScrollSpeed = 0, 
-	yScrollSpeed = 5, 
-	amplitude = 80, 
-	offset = 80)
-
-
+mainPalette = get_palette()
 screen = Screen(sections)#, ['127.0.0.1:7891'])
 
 targetFPS = 24
