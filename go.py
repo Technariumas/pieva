@@ -69,7 +69,9 @@ def index(r, g, b):
     mainPalette.regenerate([r,g,b], [g,r,b]);
     return template('ok')
 
-server = Thread(target = run)
+def runBottle():
+    run(host="ieva.local", port='80')
+server = Thread(target = runBottle)
 server.setDaemon(True)
 server.start()
 
