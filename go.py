@@ -55,7 +55,6 @@ class ColorPalette:
 		r = cm((np.arange(256)))
 		r = 256*r[:, 0:3]
 		print r
-		exit()
 		return r
 
 startColor = [0, 40, 5]
