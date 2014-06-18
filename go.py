@@ -29,7 +29,7 @@ class NoiseParams:
         self.amplitude = amplitude
         self.offset = offset
         
-paletteFileCSV="palettes/green_grass"
+paletteFileCSV="/home/mic/pieva/palettes/green_grass"
 
 width = 140
 height = 140
@@ -68,7 +68,7 @@ while True:
     screen.render(width, height, timeCounter/640., [grass, sun], mainPalette)
     endTime = time.time()
     timeToWait = targetFrameTime - (endTime - startTime)
-    print"Frame time: ", (endTime - startTime)
+    #print"Frame time: ", (endTime - startTime)
     if timeToWait < 0:
         print("late!", timeToWait)
         timeToWait = 0
