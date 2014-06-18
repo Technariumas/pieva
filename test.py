@@ -100,10 +100,10 @@ if None != cliargs.palette:
         i += 1;
         if i > 255:
             i = 0
-	print (endTime - startTime)
+        print (endTime - startTime)
         timeToWait = 1/48. - (endTime - startTime)
-	if timeToWait < 0:
-		timeToWait = 0
+        if timeToWait < 0:
+            timeToWait = 0
         time.sleep(timeToWait)
     
 if None != cliargs.image:

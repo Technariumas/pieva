@@ -2,6 +2,7 @@
 from pieva import *
 from palette import ColorPalette
 from screen import Screen
+from palette import ColorPalette
 import numpy as np
 import time
 import fastopc as opc
@@ -59,14 +60,14 @@ screen = Screen(sections)#, ['127.0.0.1:7891'])
 
 targetFPS = 24
 targetFrameTime = 1./targetFPS
-timeCounter = 0#int(random.random() * 65535)
+timeCounter = int(random.random() * 65535)
 print("eina.. Control+C to stop")
 while True:
     startTime = time.time()
     screen.render(width, height, timeCounter/640., [grass, sun], mainPalette)
     endTime = time.time()
     timeToWait = targetFrameTime - (endTime - startTime)
-#    print"Frame time: ", (endTime - startTime)
+    print"Frame time: ", (endTime - startTime)
     if timeToWait < 0:
         print("late!", timeToWait)
         timeToWait = 0
