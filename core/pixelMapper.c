@@ -25,6 +25,7 @@ typedef struct {
     int pixelCount;
     int noiseLayersCount;
     Noise_t *noiseLayers;
+    const uint8_t dimmBy;
 } RenderArgs_t;
 
 typedef struct {
@@ -33,7 +34,31 @@ typedef struct {
     const uint16_t width;
     const uint16_t height;
     int pixelCount;
+    const uint8_t dimmBy;
 } MapArgs_t;
+
+uint32_t decreaseBrightness (uint32_t pixel, uint32_t decreaseBy )
+{
+    uint8_t *outColour;
+    uint8_t i;
+
+    // TODO : if I was doing it properly the frame buffer would use a structure datatype to allow easier access to each member/byte
+    outColour = (uint8_t *)&pixel;
+    for (i=0; i<3; i++) {
+        if(decreaseBy > 0) {
+            outColour[i] = ((uint32_t)outColour[i] * (1024 - (decreaseBy << 2)) + 512) >> 10;
+        }
+    }
+
+    return(pixel);
+}
+
+uint8_t dimmComponent(uint8_t c, uint8_t decreaseBy) {
+    //float multiplier = 1.0 - (float)decreaseBy / 255.0;
+    //outColour[i] = (uint8_t)((float)outColour[i] * multiplier);
+    //return c;
+    return ((uint32_t)c * (1024 - (decreaseBy << 2)) + 512) >> 10;
+}
 
 inline static void ALWAYS_INLINE map(MapArgs_t args, char *pixels) {
     while (args.pixelCount--) {
@@ -47,9 +72,10 @@ inline static void ALWAYS_INLINE map(MapArgs_t args, char *pixels) {
         g = (args.bitmap[x + y * args.height] >> 8) & 0x000000FF;
         b = args.bitmap[x + y * args.height] & 0x000000FF;
         
-        pixels[0] = r;
-        pixels[1] = g;
-        pixels[2] = b;
+        pixels[0] = dimmComponent(r, args.dimmBy);
+        pixels[1] = dimmComponent(g, args.dimmBy);
+        pixels[2] = dimmComponent(b, args.dimmBy);
+
         pixels += 3;
     }
 }
@@ -83,9 +109,9 @@ inline static void ALWAYS_INLINE render(RenderArgs_t args, char *pixels) {
 		uint8_t g = args.palette[index * 3 + 1];
 		uint8_t b = args.palette[index * 3 + 2];
         
-        pixels[0] = r;
-        pixels[1] = g;
-        pixels[2] = b;
+        pixels[0] = dimmComponent(r, args.dimmBy);
+        pixels[1] = dimmComponent(g, args.dimmBy);
+        pixels[2] = dimmComponent(b, args.dimmBy);
         pixels += 3;
     }
 }
@@ -99,11 +125,12 @@ static PyObject* py_map(PyObject* self, PyObject* args)
     PyObject *result = NULL;
     Py_ssize_t tmp;
 
-    if (!PyArg_ParseTuple(args, "t#s#ii:map",
+    if (!PyArg_ParseTuple(args, "t#s#iii:map",
         &arguments.model, &modelBytes,
         &arguments.bitmap, &bitmapBytes,
         &arguments.width,
-        &arguments.height
+        &arguments.height,
+        &arguments.dimmBy
         )) {
         return NULL;
     }
@@ -129,14 +156,15 @@ static PyObject* py_render(PyObject* self, PyObject* args)
     PyObject *noiseLayersList;
     Py_ssize_t tmp;
 
-    if (!PyArg_ParseTuple(args, "IIft#t#O:map",
+    if (!PyArg_ParseTuple(args, "IIft#t#Oi:map",
         &arguments.width,
         &arguments.height,
         &arguments.time,
         &arguments.model, &modelBytes,
         &arguments.palette,
         &arguments.paletteLength,
-        &noiseLayersList
+        &noiseLayersList,
+        &arguments.dimmBy
         )) {
         return NULL;
     }

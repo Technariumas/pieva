@@ -17,6 +17,7 @@ def toRGBBytes(value):
 class Screen():
     opcServers = []
     pixelMap = []
+    dimmBy = 0
     
     def __init__(self, ledStrandModel, auxscreens = []):
         for section in ledStrandModel:
@@ -42,14 +43,17 @@ class Screen():
             y = y + led['ystep']
             pixmap.append((x, y))
         return pixmap
-        
+    
+    def dimm(self, dimm):
+        self.dimmBy = dimm
+    
     def send(self, bitmap):
         bitmapPacked = bitmap.astype(np.uint32).tostring()#struct.pack('I'*len(bitmap)*len(bitmap[0]), *(j for i in bitmap for j in i)) 
-        tosend = core.PixelMapper.map(self.pixelMapPacked, bitmapPacked, len(bitmap[0]), len(bitmap))
+        tosend = core.PixelMapper.map(self.pixelMapPacked, bitmapPacked, len(bitmap[0]), len(bitmap), self.dimmBy)
         for out in self.opcServers:
             out.putPixels(0, tosend)
 
     def render(self, width, height, time, noiseList, palette):
-        tosend = core.PixelMapper.render(width, height, time, self.pixelMapPacked, palette.packed, noiseList)
+        tosend = core.PixelMapper.render(width, height, time, self.pixelMapPacked, palette.packed, noiseList, self.dimmBy)
         for out in self.opcServers:
             out.putPixels(0, tosend)

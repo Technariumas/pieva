@@ -57,6 +57,7 @@ grass = NoiseParams(
 mainPalette = ColorPalette(CSVfilename=paletteFileCSV)
 
 screen = Screen(sections)#, ['127.0.0.1:7891'])
+screen.dimm(0)
 
 targetFPS = 24
 targetFrameTime = 1./targetFPS
