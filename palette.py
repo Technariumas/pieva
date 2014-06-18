@@ -21,7 +21,7 @@ class ColorPalette:
 
     def readCSVPalette(self, SNSfilename):
         r = np.genfromtxt(SNSfilename, delimiter=',')
-        return r.astype(np.int16)
+        return r.astype(np.int8)
     
     def get32bitColor(self, index):
         return self.palette[index][0] << 16 | self.palette[index][1] << 8 | self.palette[index][2]

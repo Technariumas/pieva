@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 #create colour palettes with sns
 #reguires seaborn (http://www.stanford.edu/~mwaskom/software/seaborn)
 
@@ -22,6 +24,10 @@ def make_SNS_palette(paletteFilename):
 def makeBitmapPalette(paletteFilename):
 		#Warning -- TIFF images supported only. If using 16-bit BMPs, which may work, adjust the np.savetxt() call
 		img=mpimg.imread(paletteFilename)[0]
+                if img.dtype == np.uint8:
+                    img = img.astype(np.uint32)
+                elif img.dtype == np.float32:
+                    img = (img * 255).astype(np.uint32)
 		np.savetxt(paletteFilename[0:-5], img, delimiter=",")
 
 

@@ -110,7 +110,7 @@ if None != cliargs.image:
     import matplotlib.image as mpimg
     img = mpimg.imread(cliargs.image)
 
-    if img.dtype == np.uint8 and img.shape[2] == 3:
+    if img.dtype == np.uint8:
         img = img.astype(np.uint32)
     elif img.dtype == np.float32:
         img = (img * 255).astype(np.uint32)
