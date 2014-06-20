@@ -29,7 +29,7 @@ class NoiseParams:
         self.amplitude = amplitude
         self.offset = offset
         
-paletteFileCSV="/home/mic/pieva/palettes/green_grass"
+paletteFileCSV="/home/mic/pieva/palettes/rainbow"
 
 width = 140
 height = 140
@@ -41,8 +41,8 @@ sun = NoiseParams(
     wavelength = width * 8.0, 
     xScrollSpeed = 1, 
     yScrollSpeed = 0, 
-    amplitude = 95, 
-    offset = 140)
+    amplitude = 55, 
+    offset = 0)
 
 grass = NoiseParams(
     octaves = 4, 
@@ -51,8 +51,8 @@ grass = NoiseParams(
     wavelength = width / 8, 
     xScrollSpeed = 0, 
     yScrollSpeed = 5, 
-    amplitude = 120, 
-    offset = 120)
+    amplitude = 180, 
+    offset = 180)
 
 mainPalette = ColorPalette(CSVfilename=paletteFileCSV)
 

@@ -51,7 +51,8 @@ parser.add_argument("--server", action="store", default=None, help="additional O
 parser.add_argument("--X", action="store", default=None, help="Fill one corner of the screen")
 parser.add_argument("--palette", action="store", default=None, type=open, help="Cycle a palette")
 parser.add_argument("--image", action="store", default=None, help="additional OPC server for debug purposes")
-
+parser.add_argument("--color", action="store", default=None, help="flood with one color")
+parser.add_argument("--dimm", action="store", default=None, help="dimm")
 cliargs = parser.parse_args()
 
 testDotIndex = 0
@@ -122,6 +123,17 @@ if None != cliargs.image:
     screen = Screen(sections)
     screen.send(bitmap)
     exit(0)
+
+if None != cliargs.color:
+	print "Setting to single color"
+	bitmap = np.ones([140, 140]) * int(cliargs.color, 16)
+	screen = Screen(sections)
+	if None != cliargs.dimm:
+		screen.dimm(int(cliargs.dimm))
+	else:
+		screen.dimm(128)
+	screen.send(bitmap)
+	exit(0)
 
 while True:
     test(currSection)
