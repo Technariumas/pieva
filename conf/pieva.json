@@ -27,7 +27,8 @@
             "type": "fadecandy",
             "serial": "FRNPDRHFLLCVIJOT",
 			"map": [
-				[0, 484, 0, 52, "rgb"]
+				[0, 484, 0, 52, "rgb"],
+				[0, 536, 64, 20, "rgb"]
 			]
         },
 	{
