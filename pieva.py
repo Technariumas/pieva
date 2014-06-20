@@ -79,8 +79,38 @@ C3 = {
         'startY'  : 104
 }
 
+A3 = {
+        'pattern' : section1,
+        'startX'  : 104,
+        'startY'  : 30
+}
+
+A2 = {
+        'pattern' : section1,
+        'startX'  : 66,
+        'startY'  : 30
+}
+
+B1 = {
+        'pattern' : turn90(section1),
+        'startX'  : 30,
+        'startY'  : 36
+}
+
+A1 = {
+        'pattern' : corner,
+        'startX'  : 30,
+        'startY'  : 30
+}
+
+C1 = {
+        'pattern' : turn90(corner),
+        'startX'  : 30,
+        'startY'  : 72
+}
+
 sections = [
-    C3, C2, B2, B3
+    C3, C2, B2, B3, A3, A2, B1, A1, C1
 ]
 
 #~ print section1
