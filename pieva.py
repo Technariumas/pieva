@@ -57,56 +57,56 @@ def turn180(pattern):
 
 B3 = {
         'pattern' : turn90(centersection),
-        'startX'  : 104,
-        'startY'  : 36
+        'startX'  : 105,
+        'startY'  : 37
 }
 
 B2 = {
         'pattern' : turn180(centersection),
-        'startX'  : 36,
-        'startY'  : 36
+        'startX'  : 37,
+        'startY'  : 37
 }
 
 C2 = {
         'pattern' : turnMinus90(centersection),
-        'startX'  : 36,
-        'startY'  : 104
+        'startX'  : 37,
+        'startY'  : 105
 }
 
 C3 = {
         'pattern' : centersection,
-        'startX'  : 104,
-        'startY'  : 104
+        'startX'  : 105,
+        'startY'  : 105
 }
 
 A3 = {
         'pattern' : section1,
-        'startX'  : 104,
-        'startY'  : 30
+        'startX'  : 105,
+        'startY'  : 31
 }
 
 A2 = {
         'pattern' : section1,
-        'startX'  : 66,
-        'startY'  : 30
+        'startX'  : 67,
+        'startY'  : 31
 }
 
 B1 = {
         'pattern' : turn90(section1),
-        'startX'  : 30,
-        'startY'  : 36
+        'startX'  : 31,
+        'startY'  : 37
 }
 
 A1 = {
         'pattern' : corner,
-        'startX'  : 30,
-        'startY'  : 30
+        'startX'  : 31,
+        'startY'  : 31
 }
 
 C1 = {
         'pattern' : turn90(corner),
-        'startX'  : 30,
-        'startY'  : 72
+        'startX'  : 31,
+        'startY'  : 73
 }
 
 sections = [
