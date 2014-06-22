@@ -2,7 +2,7 @@ ko reikia pievai
 
 x - Raspberry pi maitinimas
 X - Microusb laidas maitinimui
- - Miniusb laidas Fadecandy x 3
+x - Miniusb laidas Fadecandy x 3
  - Dėžučių su UTP lizdu x 20
  - UTP kabelio 30m?
  - UTP galų 50vnt
@@ -10,7 +10,6 @@ X - Microusb laidas maitinimui
  - rozetę ant laido hubui maitinti?
 x - !!!Sprendimo, kaip vedžiosim signalų laidus
 x - !!!Kaip sujunginėsim signalų laidus?
- - Buferių?
 x - !!!Sprendimo, kaip vedžiosim maitinimo laidus
 x - Kaip sujunginėsim maitinimo laidus?
  - kabel kabel sujungimo ledų maitinimui: ausų, 1,5mm laido ir kažkokių sujungimų
