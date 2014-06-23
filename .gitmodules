@@ -4,6 +4,3 @@
 [submodule "openpixelcontrol"]
 	path = openpixelcontrol
 	url = https://github.com/zestyping/openpixelcontrol.git
-[submodule "noiz"]
-	path = noiz
-	url = https://github.com/caseman/noise.git
